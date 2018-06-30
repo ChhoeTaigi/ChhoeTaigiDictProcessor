@@ -2,7 +2,14 @@
 ChhoeTaigi 找台語：台語字詞資料庫處理
 
 
-License
+License for Original Data and Generated Data
+-------
+
+Please check:
+https://github.com/ChhoeTaigi/ChhoeTaigiDatabase
+
+
+License for Source Code
 -------
 
 Copyright 2018 Ngô͘ Ka-bêng
