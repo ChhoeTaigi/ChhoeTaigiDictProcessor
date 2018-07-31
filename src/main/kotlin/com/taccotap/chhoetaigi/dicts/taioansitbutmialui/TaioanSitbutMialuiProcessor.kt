@@ -9,7 +9,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object TaioanSitbutMialuiProcessor {
-    private const val SRC_FILENAME = "TaioanSitbutMialui20180528.csv"
+    private const val SRC_FILENAME = "TaioanSitbutMialui20180731.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaioanSitbutMialui.csv"
 
     fun run(): Int {
@@ -51,6 +51,9 @@ object TaioanSitbutMialuiProcessor {
             val outEntry = TaioanSitbutMialuiOutEntry()
 
             srcEntry.tailo = srcEntry.tailo.toLowerCase().capitalize()
+            if (srcEntry.tailo == "€") {
+                continue
+            }
 
             outEntry.id = srcEntry.id
             outEntry.pojInput = LomajiConverter.tailoInputToPojInput(srcEntry.tailo)
