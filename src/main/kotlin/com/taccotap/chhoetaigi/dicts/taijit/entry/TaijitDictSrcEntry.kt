@@ -7,7 +7,7 @@ open class TaijitDictSrcEntry : DictEntry() {
     lateinit var poj: String
     lateinit var pojDialect: String
     lateinit var hanloTaibunPoj: String
-    lateinit var hanloTaibunPojKaisoeh: String
-    lateinit var hanloTaibunPojLeku: String
+    lateinit var hanloTaibunKaisoehPoj: String
+    lateinit var hanloTaibunLekuPoj: String
     lateinit var pageNumber: String
 }

@@ -33,8 +33,8 @@ object TaiJitDictProcessor {
             dictEntry.poj = recordColumnArrayList[1]
             dictEntry.pojDialect = recordColumnArrayList[2]
             dictEntry.hanloTaibunPoj = recordColumnArrayList[3]
-            dictEntry.hanloTaibunPojKaisoeh = recordColumnArrayList[4]
-            dictEntry.hanloTaibunPojLeku = recordColumnArrayList[5]
+            dictEntry.hanloTaibunKaisoehPoj = recordColumnArrayList[4]
+            dictEntry.hanloTaibunLekuPoj = recordColumnArrayList[5]
             dictEntry.pageNumber = recordColumnArrayList[8]
 
             dictArray.add(dictEntry)
@@ -52,8 +52,8 @@ object TaiJitDictProcessor {
             srcEntry.poj = LomajiConverter.pojInputStringFix(srcEntry.poj)
             srcEntry.pojDialect = LomajiConverter.pojInputStringFix(srcEntry.pojDialect)
             srcEntry.hanloTaibunPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunPoj)
-            srcEntry.hanloTaibunPojKaisoeh = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunPojKaisoeh)
-            srcEntry.hanloTaibunPojLeku = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunPojLeku)
+            srcEntry.hanloTaibunKaisoehPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunKaisoehPoj)
+            srcEntry.hanloTaibunLekuPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunLekuPoj)
 
             outEntry.id = srcEntry.id
             outEntry.pojInput = srcEntry.poj
@@ -68,10 +68,10 @@ object TaiJitDictProcessor {
 
             outEntry.hanloTaibunPoj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
             outEntry.hanloTaibunKiplmj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
-            outEntry.hanloTaibunPojKaisoeh = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPojKaisoeh, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.hanloTaibunKiplmjKaisoeh = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPojKaisoeh, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
-            outEntry.hanloTaibunPojLeku = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPojLeku, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.hanloTaibunKiplmjLeku = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPojLeku, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.hanloTaibunKaisoehPoj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunKaisoehPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
+            outEntry.hanloTaibunKaisoehKiplmj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunKaisoehPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.hanloTaibunLekuPoj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunLekuPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
+            outEntry.hanloTaibunLekuKiplmj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunLekuPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
             outEntry.pageNumber = fixPageNumberFormat(srcEntry.pageNumber)
 
             formattedDictArray.add(outEntry)
@@ -122,8 +122,8 @@ object TaiJitDictProcessor {
             taijitDictOutEntry.pojInputDialect.let { entryArray.add(it) }
 
             taijitDictOutEntry.hanloTaibunPoj.let { entryArray.add(it) }
-            taijitDictOutEntry.hanloTaibunPojKaisoeh.let { entryArray.add(it) }
-            taijitDictOutEntry.hanloTaibunPojLeku.let { entryArray.add(it) }
+            taijitDictOutEntry.hanloTaibunKaisoehPoj.let { entryArray.add(it) }
+            taijitDictOutEntry.hanloTaibunLekuPoj.let { entryArray.add(it) }
 
             taijitDictOutEntry.kiplmjUnicode.let { entryArray.add(it) }
             taijitDictOutEntry.kiplmjUnicodeDialect.let { entryArray.add(it) }
@@ -131,8 +131,8 @@ object TaiJitDictProcessor {
             taijitDictOutEntry.kiplmjInputDialect.let { entryArray.add(it) }
 
             taijitDictOutEntry.hanloTaibunKiplmj.let { entryArray.add(it) }
-            taijitDictOutEntry.hanloTaibunKiplmjKaisoeh.let { entryArray.add(it) }
-            taijitDictOutEntry.hanloTaibunKiplmjLeku.let { entryArray.add(it) }
+            taijitDictOutEntry.hanloTaibunKaisoehKiplmj.let { entryArray.add(it) }
+            taijitDictOutEntry.hanloTaibunLekuKiplmj.let { entryArray.add(it) }
 
             taijitDictOutEntry.pageNumber.let { entryArray.add(it) }
 
@@ -149,8 +149,8 @@ object TaiJitDictProcessor {
                 "poj_input_dialect",
 
                 "hanlo_taibun_poj",
-                "hanlo_taibun_poj_kaisoeh",
-                "hanlo_taibun_poj_leku",
+                "hanlo_taibun_kaisoeh_poj",
+                "hanlo_taibun_leku_poj",
 
                 "kiplmj_unicode",
                 "kiplmj_unicode_dialect",
@@ -158,8 +158,8 @@ object TaiJitDictProcessor {
                 "kiplmj_input_dialect",
 
                 "hanlo_taibun_kiplmj",
-                "hanlo_taibun_kiplmj_kaisoeh",
-                "hanlo_taibun_kiplmj_leku",
+                "hanlo_taibun_kaisoeh_kiplmj",
+                "hanlo_taibun_leku_kiplmj",
 
                 "page_number")
 

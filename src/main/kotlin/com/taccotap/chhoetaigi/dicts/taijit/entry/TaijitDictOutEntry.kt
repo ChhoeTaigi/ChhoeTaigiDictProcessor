@@ -11,8 +11,8 @@ open class TaijitDictOutEntry : DictEntry() {
     lateinit var pojInputDialect: String
 
     lateinit var hanloTaibunPoj: String
-    lateinit var hanloTaibunPojKaisoeh: String
-    lateinit var hanloTaibunPojLeku: String
+    lateinit var hanloTaibunKaisoehPoj: String
+    lateinit var hanloTaibunLekuPoj: String
 
     lateinit var kiplmjUnicode: String
     lateinit var kiplmjUnicodeDialect: String
@@ -20,8 +20,8 @@ open class TaijitDictOutEntry : DictEntry() {
     lateinit var kiplmjInputDialect: String
 
     lateinit var hanloTaibunKiplmj: String
-    lateinit var hanloTaibunKiplmjKaisoeh: String
-    lateinit var hanloTaibunKiplmjLeku: String
+    lateinit var hanloTaibunKaisoehKiplmj: String
+    lateinit var hanloTaibunLekuKiplmj: String
 
     lateinit var pageNumber: String
 }
