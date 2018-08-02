@@ -13,10 +13,10 @@ object TaioanSitbutMialuiProcessor {
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaioanSitbutMialui.csv"
 
     fun run(): Int {
-        val dictArray = loadDict()
-        val formattedDictArray = formatDict(dictArray)
-        saveDict(formattedDictArray)
-        return formattedDictArray.count()
+        val dict = loadDict()
+        val processedDictArray = processDict(dict)
+        saveDict(processedDictArray)
+        return processedDictArray.count()
     }
 
     private fun loadDict(): ArrayList<TaioanSitbutMialuiSrcEntry> {
@@ -28,73 +28,81 @@ object TaioanSitbutMialuiProcessor {
         val dictArray = ArrayList<TaioanSitbutMialuiSrcEntry>()
         var index = 1
         for (recordColumnArrayList in readCsvDictArrayList) {
-            val dictEntry = TaioanSitbutMialuiSrcEntry()
+            val srcEntry = TaioanSitbutMialuiSrcEntry()
 
             //custom id
-            dictEntry.id = index.toString()
+            srcEntry.id = index.toString()
             index++
 
-            dictEntry.tailo = recordColumnArrayList[0]
-            dictEntry.taigiHanji = recordColumnArrayList[1]
-            dictEntry.pageNumber = recordColumnArrayList[2]
+            srcEntry.kiplmj = recordColumnArrayList[0]
+            srcEntry.hanjiTaibun = recordColumnArrayList[1]
+            srcEntry.pageNumber = recordColumnArrayList[2]
 
-            dictArray.add(dictEntry)
+            dictArray.add(srcEntry)
         }
 
         return dictArray
     }
 
-    private fun formatDict(dictArray: ArrayList<TaioanSitbutMialuiSrcEntry>): List<TaioanSitbutMialuiOutEntry> {
-        val formattedDictArray = ArrayList<TaioanSitbutMialuiOutEntry>()
+    private fun processDict(dictArray: ArrayList<TaioanSitbutMialuiSrcEntry>): List<TaioanSitbutMialuiOutEntry> {
+        val processedDictArray = ArrayList<TaioanSitbutMialuiOutEntry>()
 
         for (srcEntry: TaioanSitbutMialuiSrcEntry in dictArray) {
             val outEntry = TaioanSitbutMialuiOutEntry()
 
-            srcEntry.tailo = srcEntry.tailo.toLowerCase().capitalize()
-            if (srcEntry.tailo == "€") {
+            srcEntry.kiplmj = srcEntry.kiplmj.toLowerCase().capitalize()
+            if (srcEntry.kiplmj == "€") {
                 continue
             }
 
             outEntry.id = srcEntry.id
-            outEntry.pojInput = LomajiConverter.tailoInputToPojInput(srcEntry.tailo)
+            outEntry.pojInput = LomajiConverter.kiplmjInputToPojInput(srcEntry.kiplmj)
             outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(outEntry.pojInput, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.tailoInput = srcEntry.tailo
-            outEntry.tailoUnicode = LomajiConverter.convertLomajiInputString(srcEntry.tailo, LomajiConverter.ConvertLomajiInputStringCase.CASE_TAILO_INPUT_TO_TAILO_UNICODE)
-            outEntry.taigiHanji = srcEntry.taigiHanji.replace("€", "？")
+            outEntry.kiplmjInput = srcEntry.kiplmj
+            outEntry.kiplmjUnicode = LomajiConverter.convertLomajiInputString(srcEntry.kiplmj, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.hanjiTaibun = srcEntry.hanjiTaibun.replace("€", "？")
             outEntry.pageNumber = srcEntry.pageNumber
 
-            formattedDictArray.add(outEntry)
+            processedDictArray.add(outEntry)
 
         }
 
         // sort
-        return formattedDictArray.sortedWith(compareBy { it.id.toInt() })
+        return processedDictArray.sortedWith(compareBy { it.id.toInt() })
     }
 
     private fun saveDict(formattedDictArray: List<TaioanSitbutMialuiOutEntry>) {
         val dict: ArrayList<ArrayList<String>> = ArrayList()
-        for (taihoaDictOutEntry: TaioanSitbutMialuiOutEntry in formattedDictArray) {
+        for (outEntry: TaioanSitbutMialuiOutEntry in formattedDictArray) {
             val entryArray: ArrayList<String> = ArrayList()
 
-            taihoaDictOutEntry.id.let { entryArray.add(it) }
-            taihoaDictOutEntry.pojInput.let { entryArray.add(it) }
-            taihoaDictOutEntry.pojUnicode.let { entryArray.add(it) }
-            taihoaDictOutEntry.tailoInput.let { entryArray.add(it) }
-            taihoaDictOutEntry.tailoUnicode.let { entryArray.add(it) }
-            taihoaDictOutEntry.taigiHanji.let { entryArray.add(it) }
-            taihoaDictOutEntry.pageNumber.let { entryArray.add(it) }
+            outEntry.id.let { entryArray.add(it) }
+
+            outEntry.pojUnicode.let { entryArray.add(it) }
+            outEntry.pojInput.let { entryArray.add(it) }
+
+            outEntry.kiplmjUnicode.let { entryArray.add(it) }
+            outEntry.kiplmjInput.let { entryArray.add(it) }
+
+            outEntry.hanjiTaibun.let { entryArray.add(it) }
+
+            outEntry.pageNumber.let { entryArray.add(it) }
 
             dict.add(entryArray)
         }
 
-        val path = OutputSettings.SAVE_FOLDER + OutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path = OutputSettings.SAVE_FOLDER_DATABASE + OutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
                 "id",
-                "poj_input",
+
                 "poj_unicode",
-                "tailo_input",
-                "tailo_unicode",
-                "taigi_hanji",
+                "poj_input",
+
+                "kiplmj_unicode",
+                "kiplmj_input",
+
+                "hanji_taibun",
+
                 "page_number")
 
         CsvIO.write(path, dict, csvFormat)

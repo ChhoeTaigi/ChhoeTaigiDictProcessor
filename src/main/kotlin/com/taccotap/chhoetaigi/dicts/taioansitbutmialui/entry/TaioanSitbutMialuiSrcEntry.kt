@@ -4,7 +4,7 @@ import com.taccotap.chhoetaigi.entry.DictEntry
 
 open class TaioanSitbutMialuiSrcEntry : DictEntry() {
     lateinit var id: String
-    lateinit var tailo: String
-    lateinit var taigiHanji: String
+    lateinit var kiplmj: String
+    lateinit var hanjiTaibun: String
     lateinit var pageNumber: String
 }

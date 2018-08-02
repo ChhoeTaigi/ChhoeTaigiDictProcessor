@@ -27,19 +27,17 @@ object EmbreeDictProcessor {
 
         val dictArray = ArrayList<EmbreeDictSrcEntry>()
         for (recordColumnArrayList in readXlsDictArrayList) {
-            val dictEntry = EmbreeDictSrcEntry()
+            val srcEntry = EmbreeDictSrcEntry()
 
-            dictEntry.poj = recordColumnArrayList[0].replace("*", "") // Remove * symbol for non-Taipei pronunciation
-//            dictEntry.pojKithannKhiunnkhau = "" // TODO: Need to substract from poj string
+            srcEntry.poj = recordColumnArrayList[0].replace("*", "") // Remove * symbol for non-Taipei pronunciation
+            srcEntry.hoabun = recordColumnArrayList[1]
+            srcEntry.abbreviations = "${recordColumnArrayList[2]} ${recordColumnArrayList[3]}"
+            srcEntry.nounClassifiers = recordColumnArrayList[4]
+            srcEntry.reduplication = recordColumnArrayList[5]
+            srcEntry.englishDescriptions = recordColumnArrayList[6]
+            srcEntry.pageNumber = "" // TODO: Need to add page number
 
-            dictEntry.hoagi = recordColumnArrayList[1]
-            dictEntry.abbreviations = "${recordColumnArrayList[2]} ${recordColumnArrayList[3]}"
-            dictEntry.nounClassifiers = recordColumnArrayList[4]
-            dictEntry.reduplication = recordColumnArrayList[5]
-            dictEntry.englishDescriptions = recordColumnArrayList[6]
-            dictEntry.pageNumber = "" // TODO: Need to add page number
-
-            dictArray.add(dictEntry)
+            dictArray.add(srcEntry)
         }
 
         return dictArray
@@ -59,15 +57,10 @@ object EmbreeDictProcessor {
 
             outEntry.pojInput = srcEntry.poj
             outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-//            outEntry.pojKithannKhiunnkhauInput = srcEntry.pojKithannKhiunnkhau
-//            outEntry.pojKithannKhiunnkhauUnicode = LomajiConverter.convertLomajiInputString(srcEntry.pojKithannKhiunnkhau, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
+            outEntry.tailoInput = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_INPUT)
+            outEntry.tailoUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
 
-            outEntry.tailoInput = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_INPUT)
-            outEntry.tailoUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_UNICODE)
-//            outEntry.tailoKithannKhiunnkhauInput = LomajiConverter.convertLomajiInputString(srcEntry.pojKithannKhiunnkhau, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_INPUT)
-//            outEntry.tailoKithannKhiunnkhauUnicode = LomajiConverter.convertLomajiInputString(srcEntry.pojKithannKhiunnkhau, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_UNICODE)
-
-            outEntry.hoagi = srcEntry.hoagi
+            outEntry.hoabun = srcEntry.hoabun
             outEntry.abbreviations = srcEntry.abbreviations
             outEntry.nounClassifiers = LomajiConverter.convertLomajiInputString(srcEntry.nounClassifiers, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
             outEntry.reduplication = LomajiConverter.convertLomajiInputString(srcEntry.reduplication, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
@@ -83,44 +76,46 @@ object EmbreeDictProcessor {
 
     private fun saveDict(formattedDictArray: List<EmbreeDictOutEntry>) {
         val dict: ArrayList<ArrayList<String>> = ArrayList()
-        for (embreeDictOutEntry: EmbreeDictOutEntry in formattedDictArray) {
+        for (outEntry: EmbreeDictOutEntry in formattedDictArray) {
             val entryArray: ArrayList<String> = ArrayList()
 
-            embreeDictOutEntry.id.let { entryArray.add(it) }
-            embreeDictOutEntry.pojInput.let { entryArray.add(it) }
-//            embreeDictOutEntry.pojKithannKhiunnkhauInput?.let { entryArray.add(it) }
-            embreeDictOutEntry.pojUnicode.let { entryArray.add(it) }
-//            embreeDictOutEntry.pojKithannKhiunnkhauUnicode?.let { entryArray.add(it) }
-            embreeDictOutEntry.tailoInput.let { entryArray.add(it) }
-//            embreeDictOutEntry.tailoKithannKhiunnkhauInput?.let { entryArray.add(it) }
-            embreeDictOutEntry.tailoUnicode.let { entryArray.add(it) }
-//            embreeDictOutEntry.tailoKithannKhiunnkhauUnicode?.let { entryArray.add(it) }
-            embreeDictOutEntry.hoagi.let { entryArray.add(it) }
-            embreeDictOutEntry.abbreviations.let { entryArray.add(it) }
-            embreeDictOutEntry.nounClassifiers.let { entryArray.add(it) }
-            embreeDictOutEntry.reduplication.let { entryArray.add(it) }
-            embreeDictOutEntry.englishDescriptions.let { entryArray.add(it) }
-            embreeDictOutEntry.pageNumber.let { entryArray.add(it) }
+            outEntry.id.let { entryArray.add(it) }
+
+            outEntry.pojUnicode.let { entryArray.add(it) }
+            outEntry.pojInput.let { entryArray.add(it) }
+
+            outEntry.tailoUnicode.let { entryArray.add(it) }
+            outEntry.tailoInput.let { entryArray.add(it) }
+
+            outEntry.abbreviations.let { entryArray.add(it) }
+            outEntry.nounClassifiers.let { entryArray.add(it) }
+            outEntry.reduplication.let { entryArray.add(it) }
+
+            outEntry.hoabun.let { entryArray.add(it) }
+            outEntry.englishDescriptions.let { entryArray.add(it) }
+
+            outEntry.pageNumber.let { entryArray.add(it) }
 
             dict.add(entryArray)
         }
 
-        val path = OutputSettings.SAVE_FOLDER + OutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path = OutputSettings.SAVE_FOLDER_DATABASE + OutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
                 "id",
-                "poj_input",
-//                "poj_other_input",
+
                 "poj_unicode",
-//                "poj_other_unicode",
-                "tailo_input",
-//                "tailo_other_input",
-                "tailo_unicode",
-//                "tailo_other_unicode",
-                "hoagi",
+                "poj_input",
+
+                "kiplmj_unicode",
+                "kiplmj_input",
+
                 "abbreviations",
                 "noun_classifiers",
                 "reduplication",
+
+                "hoabun",
                 "english_descriptions",
+
                 "page_number")
 
         CsvIO.write(path, dict, csvFormat)

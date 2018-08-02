@@ -13,10 +13,10 @@ object MaryknollTaiEngDictProcessor {
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_MaryknollTaiEngSuTian.csv"
 
     fun run(): Int {
-        val dictArray = loadDict()
-        val formattedDictArray = formatDict(dictArray)
-        saveDict(formattedDictArray)
-        return formattedDictArray.count()
+        val dict = loadDict()
+        val processedDictArray = processDict(dict)
+        saveDict(processedDictArray)
+        return processedDictArray.count()
     }
 
     private fun loadDict(): ArrayList<MaryknollTaiEngDictSrcEntry> {
@@ -27,29 +27,29 @@ object MaryknollTaiEngDictProcessor {
 
         val dictArray = ArrayList<MaryknollTaiEngDictSrcEntry>()
         for (recordColumnArrayList in readXlsDictArrayList) {
-            val dictEntry = MaryknollTaiEngDictSrcEntry()
+            val srcEntry = MaryknollTaiEngDictSrcEntry()
 
-            dictEntry.id = recordColumnArrayList.get(0)
+            srcEntry.id = recordColumnArrayList.get(0)
 
             var fixPoj = recordColumnArrayList[1]
                     .replace("::", "")  // remove "::" symbol for subcatogory
                     .replace("*", "nn")  // fix POJ
                     .replace("+", "o")  // fix POJ
             fixPoj = LomajiConverter.pojInputStringFix(fixPoj)
-            dictEntry.poj = fixPoj
+            srcEntry.poj = fixPoj
 
-            dictEntry.hoagi = recordColumnArrayList[2]
-            dictEntry.englishDescriptions = recordColumnArrayList[3]
-            dictEntry.pageNumber = "" // TODO: Need to add page number in source file
+            srcEntry.hoabun = recordColumnArrayList[2]
+            srcEntry.englishDescriptions = recordColumnArrayList[3]
+            srcEntry.pageNumber = "" // TODO: Need to add page number in source file
 
-            dictArray.add(dictEntry)
+            dictArray.add(srcEntry)
         }
 
         return dictArray
     }
 
-    private fun formatDict(dictArray: ArrayList<MaryknollTaiEngDictSrcEntry>): List<MaryknollTaiEngDictOutEntry> {
-        val formattedDictArray = ArrayList<MaryknollTaiEngDictOutEntry>()
+    private fun processDict(dictArray: ArrayList<MaryknollTaiEngDictSrcEntry>): List<MaryknollTaiEngDictOutEntry> {
+        val processedDictArray = ArrayList<MaryknollTaiEngDictOutEntry>()
 
         var idCount = 1
 
@@ -61,17 +61,17 @@ object MaryknollTaiEngDictProcessor {
 
             outEntry.pojInput = srcEntry.poj
             outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.tailoInput = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_INPUT)
-            outEntry.tailoUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_UNICODE)
-            outEntry.hoagi = srcEntry.hoagi
+            outEntry.kiplmjInput = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_INPUT)
+            outEntry.kiplmjUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.hoabun = srcEntry.hoabun
             outEntry.englishDescriptions = srcEntry.englishDescriptions
             outEntry.pageNumber = srcEntry.pageNumber
 
-            formattedDictArray.add(outEntry)
+            processedDictArray.add(outEntry)
         }
 
         // sort
-        return formattedDictArray.sortedWith(compareBy { it.id.toInt() })
+        return processedDictArray.sortedWith(compareBy { it.id.toInt() })
     }
 
     private fun saveDict(formattedDictArray: List<MaryknollTaiEngDictOutEntry>) {
@@ -80,26 +80,34 @@ object MaryknollTaiEngDictProcessor {
             val entryArray: ArrayList<String> = ArrayList()
 
             outEntry.id.let { entryArray.add(it) }
-            outEntry.pojInput.let { entryArray.add(it) }
+
             outEntry.pojUnicode.let { entryArray.add(it) }
-            outEntry.tailoInput.let { entryArray.add(it) }
-            outEntry.tailoUnicode.let { entryArray.add(it) }
-            outEntry.hoagi.let { entryArray.add(it) }
+            outEntry.pojInput.let { entryArray.add(it) }
+
+            outEntry.kiplmjUnicode.let { entryArray.add(it) }
+            outEntry.kiplmjInput.let { entryArray.add(it) }
+
+            outEntry.hoabun.let { entryArray.add(it) }
             outEntry.englishDescriptions.let { entryArray.add(it) }
+
             outEntry.pageNumber.let { entryArray.add(it) }
 
             dict.add(entryArray)
         }
 
-        val path = OutputSettings.SAVE_FOLDER + OutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path = OutputSettings.SAVE_FOLDER_DATABASE + OutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
                 "id",
-                "poj_input",
+
                 "poj_unicode",
-                "tailo_input",
-                "tailo_unicode",
-                "hoagi",
+                "poj_input",
+
+                "kiplmj_unicode",
+                "kiplmj_input",
+
+                "hoabun",
                 "english_descriptions",
+
                 "page_number")
 
         CsvIO.write(path, dict, csvFormat)

@@ -118,4 +118,4 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
-/dict_output/
+/output_database/

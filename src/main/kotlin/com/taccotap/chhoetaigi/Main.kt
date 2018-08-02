@@ -16,7 +16,8 @@ object OutputSettings {
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")
     val timestamp = dateFormatter.format(LocalDateTime.now())
 
-    const val SAVE_FOLDER = "./dict_output/"
+    const val SAVE_FOLDER_DATABASE = "./output_database/"
+    const val SAVE_FOLDER_LMJ_SEARCH_TABLE = "/lomaji_search_table"
 }
 
 fun main(args: Array<String>) {

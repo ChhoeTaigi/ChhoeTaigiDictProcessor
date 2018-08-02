@@ -30,9 +30,9 @@ object KamDictProcessor {
 
             dictEntry.id = recordColumnArrayList[0]
             dictEntry.poj = recordColumnArrayList[1]
-            dictEntry.taigiHanji = recordColumnArrayList[3]
-            dictEntry.taigiKaisoehPoj = recordColumnArrayList[4]
-            dictEntry.taigiKaisoehHanlo = recordColumnArrayList[5]
+            dictEntry.hanloTaibunPoj = recordColumnArrayList[3]
+            dictEntry.pojKaisoeh = recordColumnArrayList[4]
+            dictEntry.hanloTaibunKaisoehPoj = recordColumnArrayList[5]
             dictEntry.pageNumber = recordColumnArrayList[11]
 
             dictArray.add(dictEntry)
@@ -49,21 +49,21 @@ object KamDictProcessor {
 
             // fix lomaji
             srcEntry.poj = LomajiConverter.pojInputStringFix(srcEntry.poj)
-            srcEntry.taigiHanji = LomajiConverter.pojInputStringFix(srcEntry.taigiHanji)
-            srcEntry.taigiKaisoehPoj = LomajiConverter.pojInputStringFix(srcEntry.taigiKaisoehPoj)
-            srcEntry.taigiKaisoehHanlo = LomajiConverter.pojInputStringFix(srcEntry.taigiKaisoehHanlo)
+            srcEntry.hanloTaibunPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunPoj)
+            srcEntry.pojKaisoeh = LomajiConverter.pojInputStringFix(srcEntry.pojKaisoeh)
+            srcEntry.hanloTaibunKaisoehPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunKaisoehPoj)
 
             // parse
             outEntry.id = srcEntry.id
             outEntry.pojInput = srcEntry.poj
             outEntry.pojUnicode = LomajiConverter.pojInputToPojUnicode(srcEntry.poj)
-            outEntry.tailoInput = LomajiConverter.pojInputToTailoInput(srcEntry.poj)
-            outEntry.tailoUnicode = LomajiConverter.tailoInputToTailoUnicode(outEntry.tailoInput)
-            outEntry.taigiHanjiWithTailo = LomajiConverter.convertLomajiInputString(srcEntry.taigiHanji, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_UNICODE)
-            outEntry.taigiHanjiWithPoj = LomajiConverter.convertLomajiInputString(srcEntry.taigiHanji, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.taigiKaisoehPoj = LomajiConverter.convertLomajiInputString(srcEntry.taigiKaisoehPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.taigiKaisoehTailo = LomajiConverter.convertLomajiInputString(srcEntry.taigiKaisoehPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_UNICODE)
-            outEntry.taigiKaisoehHanloPoj = srcEntry.taigiKaisoehHanlo
+            outEntry.kiplmjInput = LomajiConverter.pojInputToKiplmjInput(srcEntry.poj)
+            outEntry.kiplmjUnicode = LomajiConverter.kiplmjInputToTailoUnicode(outEntry.kiplmjInput)
+            outEntry.hanloTaibunKiplmj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.hanloTaibunPoj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
+            outEntry.pojKaisoeh = LomajiConverter.convertLomajiInputString(srcEntry.pojKaisoeh, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
+            outEntry.kiplmjKaisoeh = LomajiConverter.convertLomajiInputString(srcEntry.pojKaisoeh, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.hanloTaibunKaisoehPoj = srcEntry.hanloTaibunKaisoehPoj
             outEntry.pageNumber = srcEntry.pageNumber
 
             processedDictArray.add(outEntry)
@@ -79,32 +79,42 @@ object KamDictProcessor {
             val entryArray: ArrayList<String> = ArrayList()
 
             KamDictOutEntry.id.let { entryArray.add(it) }
-            KamDictOutEntry.pojInput.let { entryArray.add(it) }
+
             KamDictOutEntry.pojUnicode.let { entryArray.add(it) }
-            KamDictOutEntry.tailoInput.let { entryArray.add(it) }
-            KamDictOutEntry.tailoUnicode.let { entryArray.add(it) }
-            KamDictOutEntry.taigiHanjiWithPoj.let { entryArray.add(it) }
-            KamDictOutEntry.taigiHanjiWithTailo.let { entryArray.add(it) }
-            KamDictOutEntry.taigiKaisoehPoj.let { entryArray.add(it) }
-            KamDictOutEntry.taigiKaisoehTailo.let { entryArray.add(it) }
-            KamDictOutEntry.taigiKaisoehHanloPoj.let { entryArray.add(it) }
+            KamDictOutEntry.pojInput.let { entryArray.add(it) }
+
+            KamDictOutEntry.hanloTaibunPoj.let { entryArray.add(it) }
+            KamDictOutEntry.pojKaisoeh.let { entryArray.add(it) }
+            KamDictOutEntry.hanloTaibunKaisoehPoj.let { entryArray.add(it) }
+
+            KamDictOutEntry.kiplmjUnicode.let { entryArray.add(it) }
+            KamDictOutEntry.kiplmjInput.let { entryArray.add(it) }
+
+            KamDictOutEntry.hanloTaibunKiplmj.let { entryArray.add(it) }
+            KamDictOutEntry.kiplmjKaisoeh.let { entryArray.add(it) }
+
             KamDictOutEntry.pageNumber.let { entryArray.add(it) }
 
             dict.add(entryArray)
         }
 
-        val path = OutputSettings.SAVE_FOLDER + OutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path = OutputSettings.SAVE_FOLDER_DATABASE + OutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
                 "id",
-                "poj_input",
+
                 "poj_unicode",
-                "tailo_input",
-                "tailo_unicode",
-                "taigi_hanlo_poj",
-                "taigi_hanlo_tailo",
-                "taigi_kaisoeh_poj",
-                "taigi_kaisoeh_tailo",
-                "taigi_kaisoeh_hanlo_poj",
+                "poj_input",
+
+                "hanlo_taibun_poj",
+                "poj_kaisoeh",
+                "hanlo_taibun_kaisoeh_poj",
+
+                "kiplmj_unicode",
+                "kiplmj_input",
+
+                "hanlo_taibun_kiplmj",
+                "kiplmj_kaisoeh",
+
                 "page_number")
 
         CsvIO.write(path, dict, csvFormat)

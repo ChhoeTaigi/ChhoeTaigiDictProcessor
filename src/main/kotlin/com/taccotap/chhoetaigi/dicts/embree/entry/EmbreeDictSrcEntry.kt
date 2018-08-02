@@ -4,8 +4,7 @@ import com.taccotap.chhoetaigi.entry.DictEntry
 
 open class EmbreeDictSrcEntry : DictEntry() {
     lateinit var poj: String
-    //    lateinit var pojKithannKhiunnkhau: String
-    lateinit var hoagi: String
+    lateinit var hoabun: String
     lateinit var abbreviations: String
     lateinit var nounClassifiers: String
     lateinit var reduplication: String

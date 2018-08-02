@@ -6,16 +6,16 @@ object LomajiConverter {
 
     enum class ConvertLomajiInputStringCase {
         CASE_POJ_INPUT_FIX,
-        CASE_POJ_INPUT_TO_TAILO_INPUT,
+        CASE_POJ_INPUT_TO_KIPLMJ_INPUT,
         CASE_POJ_INPUT_TO_POJ_UNICODE,
-        CASE_POJ_INPUT_TO_TAILO_UNICODE,
-        CASE_TAILO_INPUT_TO_POJ_INPUT,
-        CASE_TAILO_INPUT_TO_TAILO_UNICODE,
-        CASE_TAILO_INPUT_TO_POJ_UNICODE,
+        CASE_POJ_INPUT_TO_KIPLMJ_UNICODE,
+        CASE_KIPLMJ_INPUT_TO_POJ_INPUT,
+        CASE_KIPLMJ_INPUT_TO_KIPLMJ_UNICODE,
+        CASE_KIPLMJ_INPUT_TO_POJ_UNICODE,
     }
 
     enum class ConvertLomajiUnicodeStringCase {
-        CASE_TAILO_UNICODE_TO_TAILO_INPUT,
+        CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT,
         CASE_POJ_UNICODE_TO_POJ_INPUT,
     }
 
@@ -111,7 +111,7 @@ object LomajiConverter {
     /*
         For single word only, not for string.
      */
-    fun pojInputToTailoInput(pojInput: String): String {
+    fun pojInputToKiplmjInput(pojInput: String): String {
         return pojInput
                 .replace("ch", "ts") // ch -> ts
                 .replace("Ch", "Ts") // Ch -> Ts
@@ -129,7 +129,7 @@ object LomajiConverter {
     /*
          For single word only, not for string.
     */
-    fun tailoInputToPojInput(tailoInput: String): String {
+    fun kiplmjInputToPojInput(tailoInput: String): String {
         return tailoInput
                 .replace("ts", "ch") // ts -> ch
                 .replace("Ts", "Ch") // Ts -> Ch
@@ -147,19 +147,19 @@ object LomajiConverter {
     /*
         For single word only, not for string.
     */
-    private fun tailoUnicodeToTailoInput(tailoUnicode: String): String {
-        for (possibleTailoUnicode in Tailo.sTailoUnicodeToTailoNumberHashMap.keys) {
-            if (tailoUnicode.contains(possibleTailoUnicode)) {
-                val tailoSoojiSianntiau: String? = Tailo.sTailoUnicodeToTailoNumberHashMap[possibleTailoUnicode]
-                if (tailoSoojiSianntiau != null) {
-                    val tailoBoSianntiau = tailoSoojiSianntiau.substring(0, tailoSoojiSianntiau.length - 1)
-                    val sianntiauSooji = tailoSoojiSianntiau.substring(tailoSoojiSianntiau.length - 1)
-                    return tailoUnicode.replace(possibleTailoUnicode, tailoBoSianntiau) + sianntiauSooji
+    private fun kiplmjUnicodeToKiplmjInput(kiplmjUnicode: String): String {
+        for (possibleKiplmjUnicode in KipLmj.sKiplmjUnicodeToKiplmjNumberHashMap.keys) {
+            if (kiplmjUnicode.contains(possibleKiplmjUnicode)) {
+                val kiplmjSoojiSianntiau: String? = KipLmj.sKiplmjUnicodeToKiplmjNumberHashMap[possibleKiplmjUnicode]
+                if (kiplmjSoojiSianntiau != null) {
+                    val tailoBoSianntiau = kiplmjSoojiSianntiau.substring(0, kiplmjSoojiSianntiau.length - 1)
+                    val sianntiauSooji = kiplmjSoojiSianntiau.substring(kiplmjSoojiSianntiau.length - 1)
+                    return kiplmjUnicode.replace(possibleKiplmjUnicode, tailoBoSianntiau) + sianntiauSooji
                 }
             }
         }
 
-        return tailoUnicode
+        return kiplmjUnicode
     }
 
     /*
@@ -214,30 +214,30 @@ object LomajiConverter {
                     stringBuilder.append(lomajiUnicode)
                 }
 
-                ConvertLomajiInputStringCase.CASE_TAILO_INPUT_TO_TAILO_UNICODE -> {
-                    val lomajiUnicode: String = LomajiConverter.tailoInputToTailoUnicode(lomajiSoojiTiauhu)
+                ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_KIPLMJ_UNICODE -> {
+                    val lomajiUnicode: String = LomajiConverter.kiplmjInputToTailoUnicode(lomajiSoojiTiauhu)
                     stringBuilder.append(lomajiUnicode)
                 }
 
-                ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_UNICODE -> {
-                    val tailoInput = pojInputToTailoInput(lomajiSoojiTiauhu)
-                    val tailoUnicode: String = LomajiConverter.tailoInputToTailoUnicode(tailoInput)
+                ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE -> {
+                    val tailoInput = pojInputToKiplmjInput(lomajiSoojiTiauhu)
+                    val tailoUnicode: String = LomajiConverter.kiplmjInputToTailoUnicode(tailoInput)
                     stringBuilder.append(tailoUnicode)
                 }
 
-                ConvertLomajiInputStringCase.CASE_TAILO_INPUT_TO_POJ_UNICODE -> {
-                    val pojInput = tailoInputToPojInput(lomajiSoojiTiauhu)
+                ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_UNICODE -> {
+                    val pojInput = kiplmjInputToPojInput(lomajiSoojiTiauhu)
                     val pojUnicode: String = LomajiConverter.pojInputToPojUnicode(pojInput)
                     stringBuilder.append(pojUnicode)
                 }
 
-                ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_TAILO_INPUT -> {
-                    val tailoInput = pojInputToTailoInput(lomajiSoojiTiauhu)
+                ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_INPUT -> {
+                    val tailoInput = pojInputToKiplmjInput(lomajiSoojiTiauhu)
                     stringBuilder.append(tailoInput)
                 }
 
-                ConvertLomajiInputStringCase.CASE_TAILO_INPUT_TO_POJ_INPUT -> {
-                    val pojInput = tailoInputToPojInput(lomajiSoojiTiauhu)
+                ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_INPUT -> {
+                    val pojInput = kiplmjInputToPojInput(lomajiSoojiTiauhu)
                     stringBuilder.append(pojInput)
                 }
             }
@@ -257,7 +257,7 @@ object LomajiConverter {
         val matchSequence: Sequence<MatchResult>
 
         when (convertLomajiUnicodeStringCase) {
-            ConvertLomajiUnicodeStringCase.CASE_TAILO_UNICODE_TO_TAILO_INPUT -> {
+            ConvertLomajiUnicodeStringCase.CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT -> {
                 matchSequence = LomajiSplitter.splitTailoUnicode(unicodeString)
             }
 
@@ -285,8 +285,8 @@ object LomajiConverter {
             val lomajiUnicode = unicodeString.substring(matchResult.range.first, matchResult.range.last + 1)
 
             when (convertLomajiUnicodeStringCase) {
-                ConvertLomajiUnicodeStringCase.CASE_TAILO_UNICODE_TO_TAILO_INPUT -> {
-                    val tailoInput = tailoUnicodeToTailoInput(lomajiUnicode)
+                ConvertLomajiUnicodeStringCase.CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT -> {
+                    val tailoInput = kiplmjUnicodeToKiplmjInput(lomajiUnicode)
                     stringBuilder.append(tailoInput)
                 }
 
@@ -399,8 +399,8 @@ object LomajiConverter {
         }
     }
 
-    fun isNotChoanTailoString(possibleTailoString: String): Boolean {
-        val tailoInput = convertLomajiUnicodeString(possibleTailoString, ConvertLomajiUnicodeStringCase.CASE_TAILO_UNICODE_TO_TAILO_INPUT)
+    fun isNotChoanKiplmjString(possibleKiplmjString: String): Boolean {
+        val tailoInput = convertLomajiUnicodeString(possibleKiplmjString, ConvertLomajiUnicodeStringCase.CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT)
         return tailoInput.matches("[a-zA-Z0-9 -/.!?]+".toRegex()).not()
     }
 
@@ -479,82 +479,82 @@ object LomajiConverter {
 //        return 3
     }
 
-    fun tailoInputToTailoUnicode(tailoInput: String): String {
-        if (tailoInput.length > 1) {
-            val lastCharString: String = tailoInput.substring(tailoInput.length - 1)
+    fun kiplmjInputToTailoUnicode(kiplmjInput: String): String {
+        if (kiplmjInput.length > 1) {
+            val lastCharString: String = kiplmjInput.substring(kiplmjInput.length - 1)
             if (!lastCharString.isNumeric()) {
-                return tailoInput
+                return kiplmjInput
             } else {
-                val tailoBoSianntiau: String = tailoInput.substring(0, tailoInput.length - 1)
+                val kiplmjBoSianntiau: String = kiplmjInput.substring(0, kiplmjInput.length - 1)
                 val soojiSianntiauString: String = lastCharString
 
-                return convertTailoInputBoSianntiauWithSoojiSianntiauToTailoUnicode(tailoBoSianntiau, soojiSianntiauString)
+                return convertTailoInputBoSianntiauWithSoojiSianntiauToTailoUnicode(kiplmjBoSianntiau, soojiSianntiauString)
             }
         }
 
-        return tailoInput
+        return kiplmjInput
     }
 
-    private fun convertTailoInputBoSianntiauWithSoojiSianntiauToTailoUnicode(tailoBoSianntiau: String, soojiSianntiauString: String): String {
+    private fun convertTailoInputBoSianntiauWithSoojiSianntiauToTailoUnicode(kiplmjBoSianntiau: String, soojiSianntiauString: String): String {
         // Tone marks with this orders
-        if (tailoBoSianntiau.contains("a")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "a")
-        } else if (tailoBoSianntiau.contains("A")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "A")
-        } else if (tailoBoSianntiau.contains("oo")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "o")
-        } else if (tailoBoSianntiau.contains("Oo") || tailoBoSianntiau.contains("OO")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "O")
-        } else if (tailoBoSianntiau.contains("e")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "e")
-        } else if (tailoBoSianntiau.contains("E")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "E")
-        } else if (tailoBoSianntiau.contains("o")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "o")
-        } else if (tailoBoSianntiau.contains("O")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "O")
-        } else if (tailoBoSianntiau.contains("iu") || tailoBoSianntiau.contains("Iu")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "u")
-        } else if (tailoBoSianntiau.contains("IU")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "U")
-        } else if (tailoBoSianntiau.contains("ui") || tailoBoSianntiau.contains("Ui")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "i")
-        } else if (tailoBoSianntiau.contains("UI")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "I")
-        } else if (tailoBoSianntiau.contains("i")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "i")
-        } else if (tailoBoSianntiau.contains("I")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "I")
-        } else if (tailoBoSianntiau.contains("u")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "u")
-        } else if (tailoBoSianntiau.contains("U")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "U")
-        } else if (tailoBoSianntiau.contains("ng")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "ng")
-        } else if (tailoBoSianntiau.contains("Ng")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "Ng")
-        } else if (tailoBoSianntiau.contains("NG")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "NG")
-        } else if (tailoBoSianntiau.contains("m")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "m")
-        } else if (tailoBoSianntiau.contains("M")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "M")
-        } else if (tailoBoSianntiau.contains("n")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "n")
-        } else if (tailoBoSianntiau.contains("N")) {
-            return replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau, soojiSianntiauString, "N")
+        if (kiplmjBoSianntiau.contains("a")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "a")
+        } else if (kiplmjBoSianntiau.contains("A")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "A")
+        } else if (kiplmjBoSianntiau.contains("oo")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "o")
+        } else if (kiplmjBoSianntiau.contains("Oo") || kiplmjBoSianntiau.contains("OO")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "O")
+        } else if (kiplmjBoSianntiau.contains("e")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "e")
+        } else if (kiplmjBoSianntiau.contains("E")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "E")
+        } else if (kiplmjBoSianntiau.contains("o")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "o")
+        } else if (kiplmjBoSianntiau.contains("O")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "O")
+        } else if (kiplmjBoSianntiau.contains("iu") || kiplmjBoSianntiau.contains("Iu")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "u")
+        } else if (kiplmjBoSianntiau.contains("IU")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "U")
+        } else if (kiplmjBoSianntiau.contains("ui") || kiplmjBoSianntiau.contains("Ui")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "i")
+        } else if (kiplmjBoSianntiau.contains("UI")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "I")
+        } else if (kiplmjBoSianntiau.contains("i")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "i")
+        } else if (kiplmjBoSianntiau.contains("I")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "I")
+        } else if (kiplmjBoSianntiau.contains("u")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "u")
+        } else if (kiplmjBoSianntiau.contains("U")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "U")
+        } else if (kiplmjBoSianntiau.contains("ng")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "ng")
+        } else if (kiplmjBoSianntiau.contains("Ng")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "Ng")
+        } else if (kiplmjBoSianntiau.contains("NG")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "NG")
+        } else if (kiplmjBoSianntiau.contains("m")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "m")
+        } else if (kiplmjBoSianntiau.contains("M")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "M")
+        } else if (kiplmjBoSianntiau.contains("n")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "n")
+        } else if (kiplmjBoSianntiau.contains("N")) {
+            return replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau, soojiSianntiauString, "N")
         } else {
-            return tailoBoSianntiau
+            return kiplmjBoSianntiau
         }
     }
 
-    private fun replaceTailoToTailoSianntiauUnicodeWithSoojiSianntiau(tailoBoSianntiau: String, soojiSiautiauStringString: String, replaceCharString: String): String {
-        val tailoCharNumber = replaceCharString + soojiSiautiauStringString
-        val tailoUnicode = Tailo.sTailoNumberToTailoUnicodeHashMap[tailoCharNumber]
-        return if (tailoUnicode != null) {
-            tailoBoSianntiau.replaceFirst(replaceCharString, tailoUnicode, false)
+    private fun replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau: String, soojiSiautiauStringString: String, replaceCharString: String): String {
+        val kiplmjCharNumber = replaceCharString + soojiSiautiauStringString
+        val kiplmjUnicode = KipLmj.sTailoNumberToTailoUnicodeHashMap[kiplmjCharNumber]
+        return if (kiplmjUnicode != null) {
+            kiplmjBoSianntiau.replaceFirst(replaceCharString, kiplmjUnicode, false)
         } else {
-            tailoBoSianntiau
+            kiplmjBoSianntiau
         }
     }
 }

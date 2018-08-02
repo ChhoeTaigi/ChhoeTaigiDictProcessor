@@ -22,6 +22,7 @@ object KauiokpooTaigiDictProcessor {
         val dict = loadDict()
         val processedDictArray = processDict(dict)
         saveDict(processedDictArray)
+        saveLomajiSearchTable(processedDictArray)
         return processedDictArray.count()
     }
 
@@ -55,17 +56,17 @@ object KauiokpooTaigiDictProcessor {
             val wordPropertyString = wordPropertyMap[wordPropertyId] ?: ""
             dictSrcEntry.wordProperty = wordPropertyString
 
-            dictSrcEntry.taigiHanji = recordColumnArrayList[2]
-            dictSrcEntry.tailo = recordColumnArrayList[3]
+            dictSrcEntry.hanjiTaibun = recordColumnArrayList[2]
+            dictSrcEntry.kiplmj = recordColumnArrayList[3]
 
             val wordBunPehPropertyId = recordColumnArrayList[4]
             val wordBunPehPropertyString = wordBunPehPropertyMap[wordBunPehPropertyId] ?: ""
             dictSrcEntry.wordBunPehProperty = wordBunPehPropertyString
 
             // init first
-            dictSrcEntry.tailoKithannKhiunnkhau = ""
+            dictSrcEntry.kiplmjDialect = ""
             dictSrcEntry.wordKithannKhiunnkhauProperty = ""
-            dictSrcEntry.hoagi = ""
+            dictSrcEntry.hoabun = ""
             dictSrcEntry.descriptions = ""
 
             dict[dictSrcEntry.id] = dictSrcEntry
@@ -133,7 +134,7 @@ object KauiokpooTaigiDictProcessor {
                 continue
             }
 
-            dictSrcEntry.tailoKithannKhiunnkhau = recordColumnArrayList[2]
+            dictSrcEntry.kiplmjDialect = recordColumnArrayList[2]
 
             val wordAnotherPropertyIdString = recordColumnArrayList[3]
 
@@ -170,10 +171,10 @@ object KauiokpooTaigiDictProcessor {
 
             val currentHoagi = recordColumnArrayList[1]
 
-            if (dictSrcEntry.hoagi.isEmpty()) {
-                dictSrcEntry.hoagi = currentHoagi
+            if (dictSrcEntry.hoabun.isEmpty()) {
+                dictSrcEntry.hoabun = currentHoagi
             } else {
-                dictSrcEntry.hoagi = "${dictSrcEntry.hoagi}、$currentHoagi"
+                dictSrcEntry.hoabun = "${dictSrcEntry.hoabun}、$currentHoagi"
             }
         }
     }
@@ -301,37 +302,37 @@ object KauiokpooTaigiDictProcessor {
     }
 
     private fun processDict(dict: HashMap<String, KauiokpooTaigiDictSrcEntry>): List<KauiokpooTaigiDictOutEntry> {
-        val formattedDictArray = ArrayList<KauiokpooTaigiDictOutEntry>()
+        val processedDictArray = ArrayList<KauiokpooTaigiDictOutEntry>()
 
         for (srcEntry: KauiokpooTaigiDictSrcEntry in dict.values) {
             val outEntry = KauiokpooTaigiDictOutEntry()
 
             outEntry.id = srcEntry.id
 
-            outEntry.tailoInput = LomajiConverter.convertLomajiUnicodeString(srcEntry.tailo, LomajiConverter.ConvertLomajiUnicodeStringCase.CASE_TAILO_UNICODE_TO_TAILO_INPUT)
-            outEntry.tailoUnicode = srcEntry.tailo
-            outEntry.pojInput = LomajiConverter.convertLomajiInputString(outEntry.tailoInput, LomajiConverter.ConvertLomajiInputStringCase.CASE_TAILO_INPUT_TO_POJ_INPUT)
+            outEntry.kiplmjInput = LomajiConverter.convertLomajiUnicodeString(srcEntry.kiplmj, LomajiConverter.ConvertLomajiUnicodeStringCase.CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT)
+            outEntry.kiplmjUnicode = srcEntry.kiplmj
+            outEntry.pojInput = LomajiConverter.convertLomajiInputString(outEntry.kiplmjInput, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_INPUT)
             outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(outEntry.pojInput, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
 
-            outEntry.tailoInputKithannKhiunnkhau = LomajiConverter.convertLomajiUnicodeString(srcEntry.tailoKithannKhiunnkhau, LomajiConverter.ConvertLomajiUnicodeStringCase.CASE_TAILO_UNICODE_TO_TAILO_INPUT)
-            outEntry.tailoUnicodeKithannKhiunnkhau = srcEntry.tailoKithannKhiunnkhau
-            outEntry.pojInputKithannKhiunnkhau = LomajiConverter.convertLomajiInputString(outEntry.tailoInputKithannKhiunnkhau, LomajiConverter.ConvertLomajiInputStringCase.CASE_TAILO_INPUT_TO_POJ_INPUT)
-            outEntry.pojUnicodeKithannKhiunnkhau = LomajiConverter.convertLomajiInputString(outEntry.pojInputKithannKhiunnkhau, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
+            outEntry.kiplmjInputDialect = LomajiConverter.convertLomajiUnicodeString(srcEntry.kiplmjDialect, LomajiConverter.ConvertLomajiUnicodeStringCase.CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT)
+            outEntry.kiplmjUnicodeDialect = srcEntry.kiplmjDialect
+            outEntry.pojInputDialect = LomajiConverter.convertLomajiInputString(outEntry.kiplmjInputDialect, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_INPUT)
+            outEntry.pojUnicodeDialect = LomajiConverter.convertLomajiInputString(outEntry.pojInputDialect, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
 
-            outEntry.taigiHanji = srcEntry.taigiHanji
-            outEntry.hoagi = srcEntry.hoagi
+            outEntry.hanjiTaibun = srcEntry.hanjiTaibun
+            outEntry.hoabun = srcEntry.hoabun
 
             outEntry.wordProperty = srcEntry.wordProperty
             outEntry.wordBunPehProperty = srcEntry.wordBunPehProperty
-            outEntry.wordKithannKhiunnkhauProperty = srcEntry.wordKithannKhiunnkhauProperty
+            outEntry.wordDialectProperty = srcEntry.wordKithannKhiunnkhauProperty
 
             outEntry.descriptions = srcEntry.descriptions
 
-            formattedDictArray.add(outEntry)
+            processedDictArray.add(outEntry)
         }
 
         // sort
-        return formattedDictArray.sortedWith(compareBy { it.id.toInt() })
+        return processedDictArray.sortedWith(compareBy { it.id.toInt() })
     }
 
     private fun saveDict(formattedDictArray: List<KauiokpooTaigiDictOutEntry>) {
@@ -340,42 +341,114 @@ object KauiokpooTaigiDictProcessor {
             val entryArray: ArrayList<String> = ArrayList()
 
             outEntry.id.let { entryArray.add(it) }
-            outEntry.pojInput.let { entryArray.add(it) }
+
             outEntry.pojUnicode.let { entryArray.add(it) }
-            outEntry.pojInputKithannKhiunnkhau.let { entryArray.add(it) }
-            outEntry.pojUnicodeKithannKhiunnkhau.let { entryArray.add(it) }
-            outEntry.tailoInput.let { entryArray.add(it) }
-            outEntry.tailoUnicode.let { entryArray.add(it) }
-            outEntry.tailoInputKithannKhiunnkhau.let { entryArray.add(it) }
-            outEntry.tailoUnicodeKithannKhiunnkhau.let { entryArray.add(it) }
+            outEntry.pojUnicodeDialect.let { entryArray.add(it) }
+            outEntry.pojInput.let { entryArray.add(it) }
+            outEntry.pojInputDialect.let { entryArray.add(it) }
+
+            outEntry.kiplmjUnicode.let { entryArray.add(it) }
+            outEntry.kiplmjUnicodeDialect.let { entryArray.add(it) }
+            outEntry.kiplmjInput.let { entryArray.add(it) }
+            outEntry.kiplmjInputDialect.let { entryArray.add(it) }
+
             outEntry.wordProperty.let { entryArray.add(it) }
             outEntry.wordBunPehProperty.let { entryArray.add(it) }
-            outEntry.wordKithannKhiunnkhauProperty.let { entryArray.add(it) }
-            outEntry.taigiHanji.let { entryArray.add(it) }
-            outEntry.hoagi.let { entryArray.add(it) }
+            outEntry.wordDialectProperty.let { entryArray.add(it) }
+
+            outEntry.hanjiTaibun.let { entryArray.add(it) }
+            outEntry.hoabun.let { entryArray.add(it) }
+
             outEntry.descriptions.let { entryArray.add(it) }
 
             dict.add(entryArray)
         }
 
-        val path = OutputSettings.SAVE_FOLDER + OutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path = OutputSettings.SAVE_FOLDER_DATABASE + OutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
                 "id",
-                "poj_input",
+
                 "poj_unicode",
-                "poj_other_input",
-                "poj_other_unicode",
-                "tailo_input",
-                "tailo_unicode",
-                "tailo_other_input",
-                "tailo_other_unicode",
+                "poj_unicode_dialect",
+                "poj_input",
+                "poj_input_dialect",
+
+                "kiplmj_unicode",
+                "kiplmj_unicode_dialect",
+                "kiplmj_input",
+                "kiplmj_input_dialect",
+
                 "word_property",
                 "word_bunpeh_property",
-                "word_other_property",
-                "taigi_hanji",
-                "hoagi",
+                "word_dialect_property",
+
+                "hanji_taibun",
+                "hoabun",
+
                 "descriptions")
 
         CsvIO.write(path, dict, csvFormat)
+    }
+
+    private fun saveLomajiSearchTable(formattedDictArray: List<KauiokpooTaigiDictOutEntry>) {
+        val dict: ArrayList<ArrayList<String>> = ArrayList()
+
+        for (outEntry: KauiokpooTaigiDictOutEntry in formattedDictArray) {
+            generateLomajiSearchData(outEntry, dict)
+        }
+
+        val path = OutputSettings.SAVE_FOLDER_DATABASE + OutputSettings.timestamp + OutputSettings.SAVE_FOLDER_LMJ_SEARCH_TABLE + SAVE_FILENAME_PATH
+        val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
+                "poj_unicode",
+                "poj_input",
+                "kiplmj_unicode",
+                "kiplmj_input",
+                "main_id")
+
+        CsvIO.write(path, dict, csvFormat)
+    }
+
+    private fun generateLomajiSearchData(outEntry: KauiokpooTaigiDictOutEntry, dict: ArrayList<ArrayList<String>>) {
+        // handle default lomaji
+        if (outEntry.pojInput.isNotEmpty()) {
+            val pojUnicodeWords: List<String> = outEntry.pojUnicode.split("/|,".toRegex())
+            val pojInputWords: List<String> = outEntry.pojInput.split("/|,".toRegex())
+            val kiplmjUnicodeWords: List<String> = outEntry.kiplmjUnicode.split("/|,".toRegex())
+            val kiplmjInputWords: List<String> = outEntry.kiplmjInput.split("/|,".toRegex())
+
+            var pojInputWordCount = pojInputWords.size
+            for (i in 0 until pojInputWordCount) {
+                val newEntryArray: ArrayList<String> = ArrayList()
+
+                newEntryArray.add(pojUnicodeWords[i].trim())
+                newEntryArray.add(pojInputWords[i].trim())
+                newEntryArray.add(kiplmjUnicodeWords[i].trim())
+                newEntryArray.add(kiplmjInputWords[i].trim())
+                newEntryArray.add(outEntry.id)
+
+                dict.add(newEntryArray)
+            }
+        }
+
+        // handle other lomaji
+        if (outEntry.pojInputDialect.isNotEmpty()) {
+            val pojUnicodeOtherWords: List<String> = outEntry.pojUnicodeDialect.split("/|,".toRegex())
+            val pojInputOtherWords: List<String> = outEntry.pojInputDialect.split("/|,".toRegex())
+            val kiplmjUnicodeOtherWords: List<String> = outEntry.kiplmjUnicodeDialect.split("/|,".toRegex())
+            val kiplmjInputOtherWords: List<String> = outEntry.kiplmjInputDialect.split("/|,".toRegex())
+
+            var pojInputOtherWordCount = pojInputOtherWords.size
+            for (i in 0 until pojInputOtherWordCount) {
+                val newEntryArray: ArrayList<String> = ArrayList()
+
+                newEntryArray.add(pojUnicodeOtherWords[i].trim())
+                newEntryArray.add(pojInputOtherWords[i].trim())
+                newEntryArray.add(kiplmjUnicodeOtherWords[i].trim())
+                newEntryArray.add(kiplmjInputOtherWords[i].trim())
+                newEntryArray.add(outEntry.id)
+
+                dict.add(newEntryArray)
+            }
+        }
     }
 }
