@@ -8,7 +8,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object KamDictProcessor {
-    private const val SRC_FILENAME = "KamJiTian20170516.csv"
+    private const val SRC_FILENAME = "KamJitian_SBA_20180607.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_KamJitian.csv"
 
     fun run(): Int {
@@ -22,21 +22,38 @@ object KamDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
         println("path: " + resource.path)
 
-        val readCsvDictArrayList = CsvIO.read(resource.path, false)
+        val readCsvDictArrayList = CsvIO.read(resource.path, true)
 
+        var cantTypeHanjiCount = 0
+        var noHanjiCount = 0
         val dictArray = ArrayList<KamDictSrcEntry>()
         for (recordColumnArrayList in readCsvDictArrayList) {
             val dictEntry = KamDictSrcEntry()
 
             dictEntry.id = recordColumnArrayList[0]
             dictEntry.poj = recordColumnArrayList[1]
+//            dictEntry.pojDialect = recordColumnArrayList[2]
+
             dictEntry.hanloTaibunPoj = recordColumnArrayList[3]
+            if (dictEntry.hanloTaibunPoj == "●") {
+                dictEntry.hanloTaibunPoj = "？"
+                cantTypeHanjiCount++
+            } else if (dictEntry.hanloTaibunPoj == "—") {
+                dictEntry.hanloTaibunPoj = "-"
+                noHanjiCount++
+            }
+
             dictEntry.pojKaisoeh = recordColumnArrayList[4]
             dictEntry.hanloTaibunKaisoehPoj = recordColumnArrayList[5]
-            dictEntry.pageNumber = recordColumnArrayList[11]
+            dictEntry.pageNumber = recordColumnArrayList[10]
 
-            dictArray.add(dictEntry)
+            if (dictEntry.pageNumber.isNotEmpty()) { // There are few words added by Lim Chuniok, not from the book.
+                dictArray.add(dictEntry)
+            }
         }
+
+        println("KamDictProcessor: cantTypeHanjiCount = $cantTypeHanjiCount")
+        println("KamDictProcessor: noHanjiCount = $noHanjiCount")
 
         return dictArray
     }
@@ -55,10 +72,12 @@ object KamDictProcessor {
 
             // parse
             outEntry.id = srcEntry.id
+
             outEntry.pojInput = srcEntry.poj
             outEntry.pojUnicode = LomajiConverter.pojInputToPojUnicode(srcEntry.poj)
             outEntry.kiplmjInput = LomajiConverter.pojInputToKiplmjInput(srcEntry.poj)
             outEntry.kiplmjUnicode = LomajiConverter.kiplmjInputToTailoUnicode(outEntry.kiplmjInput)
+
             outEntry.hanloTaibunKiplmj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
             outEntry.hanloTaibunPoj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
             outEntry.pojKaisoeh = LomajiConverter.convertLomajiInputString(srcEntry.pojKaisoeh, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
