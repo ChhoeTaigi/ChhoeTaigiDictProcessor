@@ -9,7 +9,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object KauiokpooTaigiDictProcessor {
-    private const val SRC_FILE_PATH = "KauiokpooTaigiDict20170515/"
+    private const val SRC_FILE_PATH = "KauiokpooTaigiDict20181002/"
     private const val SRC_FILENAME_WORD = "words.xls"
     private const val SRC_FILENAME_ANOTHER_WORD = "wordsAnother.xls"
     private const val SRC_FILENAME_HOAGI = "hoagi.xls"
@@ -123,7 +123,7 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_ANOTHER_WORD")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "iuim", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "又音", true)
 
         for (recordColumnArrayList in readXlsDictArrayList) {
             val mainId = recordColumnArrayList[1]
@@ -158,10 +158,10 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_HOAGI")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "華語對應", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "對應華語", true)
 
         for (recordColumnArrayList in readXlsDictArrayList) {
-            val mainId = recordColumnArrayList[0]
+            val mainId = recordColumnArrayList[1]
             val dictSrcEntry = dict[mainId]
 
             if (dictSrcEntry == null) {
@@ -169,7 +169,7 @@ object KauiokpooTaigiDictProcessor {
                 continue
             }
 
-            val currentHoagi = recordColumnArrayList[1]
+            val currentHoagi = recordColumnArrayList[2]
 
             if (dictSrcEntry.hoabun.isEmpty()) {
                 dictSrcEntry.hoabun = currentHoagi
@@ -186,7 +186,7 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_DESC")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "sikgi", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "釋義", true)
 
         for (recordColumnArrayList in readXlsDictArrayList) {
             val mainId = recordColumnArrayList[1]
@@ -243,12 +243,18 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_DESC")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "詞性對照", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "詞性代號", true)
 
         val propertyMap = HashMap<String, String>()
-        for (recordColumnArrayList in readXlsDictArrayList) {
+        for (i in readXlsDictArrayList.indices) {
+            val recordColumnArrayList = readXlsDictArrayList[i]
+
             val propertyId = recordColumnArrayList[0]
-            val propertyName = recordColumnArrayList[1]
+            var propertyName = recordColumnArrayList[1]
+
+            if (propertyId == "0") {
+                propertyName = ""
+            }
 
             propertyMap[propertyId] = propertyName
         }
@@ -261,7 +267,7 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_EXAMPLE")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "leku", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "例句", true)
 
         val exampleMap = HashMap<String, HashMap<String, String>>()
         for (recordColumnArrayList in readXlsDictArrayList) {
