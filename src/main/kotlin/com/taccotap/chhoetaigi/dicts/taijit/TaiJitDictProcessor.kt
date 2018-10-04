@@ -8,7 +8,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object TaiJitDictProcessor {
-    private const val SRC_FILENAME = "TaiJitToaSuTian20170516.csv"
+    private const val SRC_FILENAME = "TaiJitToaSutian_SBA_20180603_fixed.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaiJitToaSuTian.csv"
 
     fun run(): Int {
@@ -23,7 +23,7 @@ object TaiJitDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
         println("path: " + resource.path)
 
-        val readCsvDictArrayList = CsvIO.read(resource.path, false)
+        val readCsvDictArrayList = CsvIO.read(resource.path, true)
 
         val dictArray = ArrayList<TaijitDictSrcEntry>()
         for (recordColumnArrayList in readCsvDictArrayList) {
