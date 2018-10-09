@@ -10,7 +10,7 @@ import org.apache.commons.csv.CSVFormat
 
 object MaryknollTaiEngDictProcessor {
     private const val SRC_FILENAME = "Mkdictionary2013.xls"
-    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_MaryknollTaiEngSuTian.csv"
+    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_MaryknollTaiengSutian.csv"
 
     fun run(): Int {
         val dict = loadDict()

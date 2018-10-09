@@ -9,7 +9,7 @@ import org.apache.commons.csv.CSVFormat
 
 object TaiJitDictProcessor {
     private const val SRC_FILENAME = "TaiJitToaSutian_SBA_20180603_fixed.csv"
-    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaiJitToaSuTian.csv"
+    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaijitToaSutian.csv"
 
     fun run(): Int {
         val dict = loadDict()
@@ -32,7 +32,14 @@ object TaiJitDictProcessor {
             dictEntry.id = recordColumnArrayList[0]
             dictEntry.poj = recordColumnArrayList[1]
             dictEntry.pojDialect = recordColumnArrayList[2]
+
             dictEntry.hanloTaibunPoj = recordColumnArrayList[3]
+            dictEntry.hanloTaibunPoj = dictEntry.hanloTaibunPoj
+                    .replaceFirst("[", "")
+                    .replaceFirst("]", "")
+                    .replace(" ", "")
+
+
             dictEntry.hanloTaibunKaisoehPoj = recordColumnArrayList[4]
             dictEntry.hanloTaibunLekuPoj = recordColumnArrayList[5]
             dictEntry.pageNumber = recordColumnArrayList[8]
