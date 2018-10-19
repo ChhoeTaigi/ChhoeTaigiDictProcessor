@@ -30,7 +30,12 @@ object TaihoaDictProcessor {
             val srcEntry = TaihoaDictSrcEntry()
 
             srcEntry.id = recordColumnArrayList[0]
+
             srcEntry.poj = recordColumnArrayList[1]
+            if (srcEntry.poj.isEmpty()) {
+                continue
+            }
+
             srcEntry.pojDialect = recordColumnArrayList[2]
             srcEntry.hanloTaibunPoj = recordColumnArrayList[3]
             srcEntry.hoabun = recordColumnArrayList[4]
