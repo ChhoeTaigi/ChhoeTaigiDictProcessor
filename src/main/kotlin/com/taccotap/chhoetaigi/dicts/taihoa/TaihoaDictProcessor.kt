@@ -8,7 +8,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object TaihoaDictProcessor {
-    private const val SRC_FILENAME = "TaiHoa20170516.csv"
+    private const val SRC_FILENAME = "TaiHoa20170516_fixed.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaibunHoabunSoanntengSutian.csv"
 
     fun run(): Int {

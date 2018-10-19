@@ -2,7 +2,6 @@ package com.taccotap.chhoetaigi.lomajiutils
 
 import java.util.*
 
-
 object Poj {
 
     // <poj_unicode, poj_number>

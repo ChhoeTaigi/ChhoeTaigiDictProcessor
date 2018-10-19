@@ -326,20 +326,51 @@ object LomajiConverter {
     }
 
     private fun convertPojInputBoSianntiauWithSoojiSianntiauToPojUnicode(pojBoSianntiau: String, soojiSianntiauString: String): String {
-        val pojSianntiauPosition: Int = getPojSianntiauPosition(pojBoSianntiau)
+        val pojSianntiauPosition = getPojSianntiauPosition(pojBoSianntiau)
 
-        if (pojSianntiauPosition == -1) {
+        if (pojSianntiauPosition == null) {
             return pojBoSianntiau
         } else {
-            return pojBoSianntiau.substring(0, pojSianntiauPosition) +
-                    Poj.sPojNumberToPojUnicodeHashMap[pojBoSianntiau.substring(pojSianntiauPosition, pojSianntiauPosition + 1) + soojiSianntiauString] +
-                    pojBoSianntiau.substring(pojSianntiauPosition + 1)
+            val str1 = pojBoSianntiau.substring(0, pojSianntiauPosition.pos)
+
+            val str2PojBosianntiau = pojBoSianntiau.substring(pojSianntiauPosition.pos, pojSianntiauPosition.pos + pojSianntiauPosition.length)
+            val str2PojNumber = str2PojBosianntiau + soojiSianntiauString
+            val str2 = Poj.sPojNumberToPojUnicodeHashMap[str2PojNumber]
+            if (str2.isNullOrEmpty()) {
+                throw PojUnicodeNotFoundException("Poj.sPojNumberToPojUnicodeHashMap[$str2PojNumber] not found")
+            }
+
+            val str3 = pojBoSianntiau.substring(pojSianntiauPosition.pos + pojSianntiauPosition.length, pojBoSianntiau.length)
+
+//            println("$pojBoSianntiau$soojiSianntiauString -> $str1$str2$str3")
+
+            return str1 + str2 + str3
         }
     }
 
-    private fun getPojSianntiauPosition(pojBoSianntiau: String): Int {
+//    private fun convertPojInputBoSianntiauWithSoojiSianntiauToPojUnicodeDeprecated(pojBoSianntiau: String, soojiSianntiauString: String): String {
+//        val pojSianntiauPosition: Int = getPojSianntiauPosition(pojBoSianntiau)
+//
+//        if (pojSianntiauPosition == -1) {
+//            return pojBoSianntiau
+//        } else {
+//            val str1 = pojBoSianntiau.substring(0, pojSianntiauPosition)
+//
+//            val pojNumber = pojBoSianntiau.substring(pojSianntiauPosition, pojSianntiauPosition + 1) + soojiSianntiauString
+//            val str2 = Poj.sPojNumberToPojUnicodeHashMap[pojNumber]
+//            if (str2.isNullOrEmpty()) {
+//                throw PojUnicodeNotFoundException("Poj.sPojNumberToPojUnicodeHashMap[$pojNumber] not found")
+//            }
+//
+//            val str3 = pojBoSianntiau.substring(pojSianntiauPosition + 1)
+//
+//            return str1 + str2 + str3
+//        }
+//    }
+
+    private fun getPojSianntiauPosition(pojBoSianntiau: String): PojSianntiauPosition? {
         val str = pojBoSianntiau.toLowerCase()
-        val vowelList = listOf("a", "i", "u", "e", "o")
+        val vowelList = listOf("a", "i", "u", "o͘", "e", "o")
         val semivowelList = listOf("m", "ng", "n")
 
         val lastIndexOfAnyVowel = str.lastIndexOfAny(vowelList)
@@ -350,10 +381,14 @@ object LomajiConverter {
             val lastIndexOfAnySemiVowel = str.lastIndexOfAny(semivowelList)
             if (lastIndexOfAnySemiVowel == -1) {
                 // Found no vowel, nor semivowel. Abort tone marking.
-                return -1
+                return null
             } else {
                 // Found no vowel, but found semivowel. Tone marks at semivowel.
-                return lastIndexOfAnySemiVowel
+                if (str.contains("ng")) {
+                    return PojSianntiauPosition(lastIndexOfAnySemiVowel, 2)
+                } else {
+                    return PojSianntiauPosition(lastIndexOfAnySemiVowel, 1)
+                }
             }
         } else {
             // Found a vowel
@@ -361,7 +396,7 @@ object LomajiConverter {
             val vowelCount: Int = getVowelCount(str, lastIndexOfAnyVowel)
 
             if (vowelCount == 1) {
-                return lastIndexOfAnyVowel
+                return PojSianntiauPosition(lastIndexOfAnyVowel, 1)
             } else {
                 // Found HokBoim
 
@@ -375,12 +410,14 @@ object LomajiConverter {
                     // Handle special cases:
                     if (str.toLowerCase().contains("iuh")) {
                         // "iuh" found
-                        return findJiboPositionFromLastCharExludingPhinnim(str, 2)
+                        val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 2)
+                        return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                     } else {
                         if (last2ndJiboString.toLowerCase().matches("[iu]".toRegex())) {
-                            return findJiboPositionFromLastCharExludingPhinnim(str, 3)
+                            val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 3)
+                            return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                         } else {
-                            return last2ndJiboPosition
+                            return PojSianntiauPosition(last2ndJiboPosition, 1)
                         }
                     }
                 } else {
@@ -389,15 +426,79 @@ object LomajiConverter {
                     // Handle special cases:
                     if (last2ndJiboString.toLowerCase() == "i") {
                         // Tone marks at the last jibo. (excluding phinnim)
-                        return findJiboPositionFromLastCharExludingPhinnim(str, 1)
+                        val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 1)
+                        return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                     }
 
                     // Tone marks at the last 2nd jibo. (excluding phinnim)
-                    return findJiboPositionFromLastCharExludingPhinnim(str, 2)
+                    val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 2)
+                    return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                 }
             }
         }
     }
+
+//    private fun getPojSianntiauPositionDeprecated(pojBoSianntiau: String): Int {
+//        val str = pojBoSianntiau.toLowerCase()
+//        val vowelList = listOf("a", "i", "u", "o͘", "e", "o")
+//        val semivowelList = listOf("m", "ng", "n")
+//
+//        val lastIndexOfAnyVowel = str.lastIndexOfAny(vowelList)
+//
+//        if (lastIndexOfAnyVowel == -1) {
+//            // Found no vowel
+//
+//            val lastIndexOfAnySemiVowel = str.lastIndexOfAny(semivowelList)
+//            if (lastIndexOfAnySemiVowel == -1) {
+//                // Found no vowel, nor semivowel. Abort tone marking.
+//                return -1
+//            } else {
+//                // Found no vowel, but found semivowel. Tone marks at semivowel.
+//                return lastIndexOfAnySemiVowel
+//            }
+//        } else {
+//            // Found a vowel
+//
+//            val vowelCount: Int = getVowelCount(str, lastIndexOfAnyVowel)
+//
+//            if (vowelCount == 1) {
+//                return lastIndexOfAnyVowel
+//            } else {
+//                // Found HokBoim
+//
+//                val last2ndJiboPosition = findJiboPositionFromLastCharExludingPhinnim(str, 2)
+//                val last2ndJiboString = str.substring(last2ndJiboPosition, last2ndJiboPosition + 1)
+//
+//                val isPojJipsiann = isPojJipsiann(str)
+//                if (isPojJipsiann) {
+//                    // Found HokBoim Jipsiann
+//
+//                    // Handle special cases:
+//                    if (str.toLowerCase().contains("iuh")) {
+//                        // "iuh" found
+//                        return findJiboPositionFromLastCharExludingPhinnim(str, 2)
+//                    } else {
+//                        if (last2ndJiboString.toLowerCase().matches("[iu]".toRegex())) {
+//                            return findJiboPositionFromLastCharExludingPhinnim(str, 3)
+//                        } else {
+//                            return last2ndJiboPosition
+//                        }
+//                    }
+//                } else {
+//                    // Found HokBoim Not Jipsiann
+//
+//                    // Handle special cases:
+//                    if (last2ndJiboString.toLowerCase() == "i") {
+//                        // Tone marks at the last jibo. (excluding phinnim)
+//                        return findJiboPositionFromLastCharExludingPhinnim(str, 1)
+//                    }
+//
+//                    // Tone marks at the last 2nd jibo. (excluding phinnim)
+//                    return findJiboPositionFromLastCharExludingPhinnim(str, 2)
+//                }
+//            }
+//        }
+//    }
 
     fun isNotChoanKiplmjString(possibleKiplmjString: String): Boolean {
         val tailoInput = convertLomajiUnicodeString(possibleKiplmjString, ConvertLomajiUnicodeStringCase.CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT)
@@ -415,15 +516,14 @@ object LomajiConverter {
 
         while (pos >= 0) {
             val currentCharString = pojBoSianntiau.substring(pos, pos + 1)
-            var isFoundPojOo = false
+            var isFoundPojOoPoint = false
             var isFoundPojNg = false
 
             if (currentCharString == "ⁿ") {
                 // skip
             } else if (currentCharString == "\u0358") {
-                // found "o͘  " and shift 2 pos
-                isFoundPojOo = true
-                foundJiboCount++
+                // found "o͘  "'s "͘  "
+                isFoundPojOoPoint = true
             } else if (currentCharString.toLowerCase() == "g" && pos - 1 >= 0) {
                 val nextCharString = pojBoSianntiau.substring(pos - 1, pos)
                 if (nextCharString.toLowerCase() == "n") {
@@ -441,8 +541,10 @@ object LomajiConverter {
                 break
             }
 
-            if (isFoundPojOo || isFoundPojNg) {
+            if (isFoundPojNg) {
                 pos -= 2
+            } else if (isFoundPojOoPoint) {
+                pos--
             } else {
                 pos--
             }

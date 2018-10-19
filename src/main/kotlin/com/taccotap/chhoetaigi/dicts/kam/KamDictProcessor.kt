@@ -8,7 +8,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object KamDictProcessor {
-    private const val SRC_FILENAME = "KamJitian_SBA_20180607.csv"
+    private const val SRC_FILENAME = "KamJitian_SBA_20180607_fixed.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_KamJitian.csv"
 
     fun run(): Int {
