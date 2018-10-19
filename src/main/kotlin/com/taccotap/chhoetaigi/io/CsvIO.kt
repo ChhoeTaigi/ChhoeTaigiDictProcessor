@@ -3,6 +3,7 @@ package com.taccotap.chhoetaigi.io
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
 import org.apache.commons.csv.CSVPrinter
+import org.apache.commons.csv.QuoteMode
 import java.io.*
 import java.util.*
 
@@ -61,7 +62,7 @@ class CsvIO {
                 file.mkdirs()
 
                 fileWriter = FileWriter(path)
-                csvPrinter = CSVPrinter(fileWriter, csvFormat)
+                csvPrinter = CSVPrinter(fileWriter, csvFormat.withQuoteMode(QuoteMode.ALL))
 
                 for (records: ArrayList<String> in recordsArrayList) {
                     csvPrinter.printRecord(records)

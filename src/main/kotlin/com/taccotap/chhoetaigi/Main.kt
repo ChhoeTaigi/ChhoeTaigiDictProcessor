@@ -47,6 +47,7 @@ fun main(args: Array<String>) {
 
     val total = count1 + count2 + count3 + count4 + count5 + count6 + count7 + count8 + count9
     println("Total: $total")
+
 }
 
 //fun testPojSianntiauPos() {

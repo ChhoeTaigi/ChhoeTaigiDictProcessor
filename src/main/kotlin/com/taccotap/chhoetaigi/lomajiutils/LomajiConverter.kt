@@ -215,13 +215,13 @@ object LomajiConverter {
                 }
 
                 ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_KIPLMJ_UNICODE -> {
-                    val lomajiUnicode: String = LomajiConverter.kiplmjInputToTailoUnicode(lomajiSoojiTiauhu)
+                    val lomajiUnicode: String = LomajiConverter.kiplmjInputToKiplmjUnicode(lomajiSoojiTiauhu)
                     stringBuilder.append(lomajiUnicode)
                 }
 
                 ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE -> {
                     val tailoInput = pojInputToKiplmjInput(lomajiSoojiTiauhu)
-                    val tailoUnicode: String = LomajiConverter.kiplmjInputToTailoUnicode(tailoInput)
+                    val tailoUnicode: String = LomajiConverter.kiplmjInputToKiplmjUnicode(tailoInput)
                     stringBuilder.append(tailoUnicode)
                 }
 
@@ -581,7 +581,7 @@ object LomajiConverter {
 //        return 3
     }
 
-    fun kiplmjInputToTailoUnicode(kiplmjInput: String): String {
+    fun kiplmjInputToKiplmjUnicode(kiplmjInput: String): String {
         if (kiplmjInput.length > 1) {
             val lastCharString: String = kiplmjInput.substring(kiplmjInput.length - 1)
             if (!lastCharString.isNumeric()) {
