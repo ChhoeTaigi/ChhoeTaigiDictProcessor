@@ -48,3 +48,47 @@ fun main(args: Array<String>) {
     val total = count1 + count2 + count3 + count4 + count5 + count6 + count7 + count8 + count9
     println("Total: $total")
 }
+
+//fun testPojSianntiauPos() {
+//    val a1 = listOf("a", "i", "u", "o͘", "e", "o")
+//    val a2 = listOf("am", "an", "ang", "im", "in", "eng", "om", "ong")
+//    val a3 = listOf("ai", "au", "ia", "io", "iu", "ui", "oa", "oe", "iau", "oai")
+//    val a4 = listOf("iam", "ian", "iang", "iong", "oan", "oang")
+//    val a5 = listOf("ap", "at", "ak", "ah", "ip", "it", "ih", "ut", "uh", "op", "ok", "o͘ h", "ek", "eh", "oh")
+//    val a6 = listOf("aih", "auh", "iah", "ioh", "iuh", "uih", "oah", "oeh", "iauh", "oaih")
+//    val a7 = listOf("iap", "iat", "iak", "iok", "oat")
+//    val a8 = listOf("m", "n", "ng", "mh", "ngh")
+//
+//    for (s in a1) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//    for (s in a2) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//    for (s in a3) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//    for (s in a4) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//    for (s in a5) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//    for (s in a6) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//    for (s in a7) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//    for (s in a8) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = $position")
+//    }
+//}

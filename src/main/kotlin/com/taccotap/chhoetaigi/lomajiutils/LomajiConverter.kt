@@ -456,7 +456,7 @@ object LomajiConverter {
     }
 
     private fun getVowelCount(pojBoSianntiau: String, lastIndexOfAnyVowel: Int): Int {
-        if (lastIndexOfAnyVowel - 1 <= 0) {
+        if (lastIndexOfAnyVowel == 0) {
             return 1
         }
 
