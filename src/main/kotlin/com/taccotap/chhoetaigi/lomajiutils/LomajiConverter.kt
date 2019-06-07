@@ -314,18 +314,20 @@ object LomajiConverter {
             val lastCharString: String = pojInputFix.substring(pojInputFix.length - 1)
             if (!lastCharString.isNumeric()) {
                 return pojInputFix
+            } else if (lastCharString == "1" || lastCharString == "4") {
+                return pojInputFix.substring(0, pojInputFix.length - 1)
             } else {
                 val pojBoSianntiau: String = pojInputFix.substring(0, pojInputFix.length - 1)
                 val soojiSianntiauString: String = lastCharString
 
-                return convertPojInputBoSianntiauWithSoojiSianntiauToPojUnicode(pojBoSianntiau, soojiSianntiauString)
+                return convertPojInputBoSianntiauWithSoojiSianntiauToPojUnicode(pojInput, pojBoSianntiau, soojiSianntiauString)
             }
         }
 
         return pojInputFix
     }
 
-    private fun convertPojInputBoSianntiauWithSoojiSianntiauToPojUnicode(pojBoSianntiau: String, soojiSianntiauString: String): String {
+    private fun convertPojInputBoSianntiauWithSoojiSianntiauToPojUnicode(pojInput: String, pojBoSianntiau: String, soojiSianntiauString: String): String {
         val pojSianntiauPosition = getPojSianntiauPosition(pojBoSianntiau)
 
         if (pojSianntiauPosition == null) {
@@ -337,6 +339,7 @@ object LomajiConverter {
             val str2PojNumber = str2PojBosianntiau + soojiSianntiauString
             val str2 = Poj.sPojNumberToPojUnicodeHashMap[str2PojNumber]
             if (str2.isNullOrEmpty()) {
+                println("Poj.sPojNumberToPojUnicodeHashMap not found: $pojInput, $str2PojNumber")
                 throw PojUnicodeNotFoundException("Poj.sPojNumberToPojUnicodeHashMap[$str2PojNumber] not found")
             }
 
@@ -368,10 +371,11 @@ object LomajiConverter {
 //        }
 //    }
 
-    private fun getPojSianntiauPosition(pojBoSianntiau: String): PojSianntiauPosition? {
+    fun getPojSianntiauPosition(pojBoSianntiau: String): PojSianntiauPosition? {
         val str = pojBoSianntiau.toLowerCase()
         val vowelList = listOf("a", "i", "u", "o͘", "e", "o")
         val semivowelList = listOf("m", "ng", "n")
+        val choankhiunnVowelList = listOf("ir", "er")
 
         val lastIndexOfAnyVowel = str.lastIndexOfAny(vowelList)
 
@@ -392,6 +396,14 @@ object LomajiConverter {
             }
         } else {
             // Found a vowel
+
+            // handle ir/er
+            if (str.contains("(ir|er)".toRegex())) {
+//                println("ir/er pojBoSianntiau: $pojBoSianntiau")
+
+                val lastIndexOfAnyChoankhiunnVowel = str.lastIndexOfAny(choankhiunnVowelList)
+                return PojSianntiauPosition(lastIndexOfAnyChoankhiunnVowel, 1)
+            }
 
             val vowelCount: Int = getVowelCount(str, lastIndexOfAnyVowel)
 
@@ -417,7 +429,7 @@ object LomajiConverter {
                             val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 3)
                             return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                         } else {
-                            return PojSianntiauPosition(last2ndJiboPosition, 1)
+                                return PojSianntiauPosition(last2ndJiboPosition, 1)
                         }
                     }
                 } else {
@@ -437,68 +449,6 @@ object LomajiConverter {
             }
         }
     }
-
-//    private fun getPojSianntiauPositionDeprecated(pojBoSianntiau: String): Int {
-//        val str = pojBoSianntiau.toLowerCase()
-//        val vowelList = listOf("a", "i", "u", "o͘", "e", "o")
-//        val semivowelList = listOf("m", "ng", "n")
-//
-//        val lastIndexOfAnyVowel = str.lastIndexOfAny(vowelList)
-//
-//        if (lastIndexOfAnyVowel == -1) {
-//            // Found no vowel
-//
-//            val lastIndexOfAnySemiVowel = str.lastIndexOfAny(semivowelList)
-//            if (lastIndexOfAnySemiVowel == -1) {
-//                // Found no vowel, nor semivowel. Abort tone marking.
-//                return -1
-//            } else {
-//                // Found no vowel, but found semivowel. Tone marks at semivowel.
-//                return lastIndexOfAnySemiVowel
-//            }
-//        } else {
-//            // Found a vowel
-//
-//            val vowelCount: Int = getVowelCount(str, lastIndexOfAnyVowel)
-//
-//            if (vowelCount == 1) {
-//                return lastIndexOfAnyVowel
-//            } else {
-//                // Found HokBoim
-//
-//                val last2ndJiboPosition = findJiboPositionFromLastCharExludingPhinnim(str, 2)
-//                val last2ndJiboString = str.substring(last2ndJiboPosition, last2ndJiboPosition + 1)
-//
-//                val isPojJipsiann = isPojJipsiann(str)
-//                if (isPojJipsiann) {
-//                    // Found HokBoim Jipsiann
-//
-//                    // Handle special cases:
-//                    if (str.toLowerCase().contains("iuh")) {
-//                        // "iuh" found
-//                        return findJiboPositionFromLastCharExludingPhinnim(str, 2)
-//                    } else {
-//                        if (last2ndJiboString.toLowerCase().matches("[iu]".toRegex())) {
-//                            return findJiboPositionFromLastCharExludingPhinnim(str, 3)
-//                        } else {
-//                            return last2ndJiboPosition
-//                        }
-//                    }
-//                } else {
-//                    // Found HokBoim Not Jipsiann
-//
-//                    // Handle special cases:
-//                    if (last2ndJiboString.toLowerCase() == "i") {
-//                        // Tone marks at the last jibo. (excluding phinnim)
-//                        return findJiboPositionFromLastCharExludingPhinnim(str, 1)
-//                    }
-//
-//                    // Tone marks at the last 2nd jibo. (excluding phinnim)
-//                    return findJiboPositionFromLastCharExludingPhinnim(str, 2)
-//                }
-//            }
-//        }
-//    }
 
     fun isNotChoanKiplmjString(possibleKiplmjString: String): Boolean {
         val tailoInput = convertLomajiUnicodeString(possibleKiplmjString, ConvertLomajiUnicodeStringCase.CASE_KIPLMJ_UNICODE_TO_KIPLMJ_INPUT)

@@ -8,7 +8,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object TaiJitDictProcessor {
-    private const val SRC_FILENAME = "TaiJitToaSutian_SBA_20180603_fixed.csv"
+    private const val SRC_FILENAME = "TaijitToaSutian_20190417_fix.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaijitToaSutian.csv"
 
     fun run(): Int {
@@ -23,7 +23,7 @@ object TaiJitDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
         println("path: " + resource.path)
 
-        val readCsvDictArrayList = CsvIO.read(resource.path, true)
+        val readCsvDictArrayList = CsvIO.read(resource.path, false)
 
         val dictArray = ArrayList<TaijitDictSrcEntry>()
         for (recordColumnArrayList in readCsvDictArrayList) {
@@ -32,19 +32,16 @@ object TaiJitDictProcessor {
             dictEntry.id = recordColumnArrayList[0]
             dictEntry.poj = recordColumnArrayList[1]
             dictEntry.pojDialect = recordColumnArrayList[2]
-
             dictEntry.hanloTaibunPoj = recordColumnArrayList[3]
-            dictEntry.hanloTaibunPoj = dictEntry.hanloTaibunPoj
-                    .replaceFirst("[", "")
-                    .replaceFirst("]", "")
-                    .replace(" ", "")
-
-
             dictEntry.hanloTaibunKaisoehPoj = recordColumnArrayList[4]
             dictEntry.hanloTaibunLekuPoj = recordColumnArrayList[5]
-            dictEntry.pageNumber = recordColumnArrayList[8]
+            dictEntry.pageNumber = recordColumnArrayList[11]
 
             dictArray.add(dictEntry)
+
+//            if (dictEntry.pojDialect.contains("r")) {
+//                println("srcEntry.pojDialect = ${dictEntry.pojDialect}")
+//            }
         }
 
         return dictArray
@@ -61,6 +58,8 @@ object TaiJitDictProcessor {
             srcEntry.hanloTaibunPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunPoj)
             srcEntry.hanloTaibunKaisoehPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunKaisoehPoj)
             srcEntry.hanloTaibunLekuPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunLekuPoj)
+
+            srcEntry.hanloTaibunLekuPoj = fixLekuTrailingNumber(srcEntry.hanloTaibunLekuPoj)
 
             outEntry.id = srcEntry.id
             outEntry.pojInput = srcEntry.poj
@@ -79,7 +78,7 @@ object TaiJitDictProcessor {
             outEntry.hanloTaibunKaisoehKiplmj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunKaisoehPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
             outEntry.hanloTaibunLekuPoj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunLekuPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
             outEntry.hanloTaibunLekuKiplmj = LomajiConverter.convertLomajiInputString(srcEntry.hanloTaibunLekuPoj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
-            outEntry.pageNumber = fixPageNumberFormat(srcEntry.pageNumber)
+            outEntry.pageNumber = srcEntry.pageNumber
 
             formattedDictArray.add(outEntry)
         }
@@ -88,32 +87,14 @@ object TaiJitDictProcessor {
         return formattedDictArray.sortedWith(compareBy { it.id.toInt() })
     }
 
-    private fun fixPageNumberFormat(pageNumber: String): String {
-        val matchSequence: Sequence<MatchResult> = Regex("[a-zA-Z]+[0-9]+").findAll(pageNumber)
-        val matchList = matchSequence.toList()
-        val size = matchList.size
+    private fun fixLekuTrailingNumber(hanloTaibunLekuPoj: String): String {
+        if (hanloTaibunLekuPoj.contains("\\+E[0-9]+".toRegex())) {
+            println("hanloTaibunLekuPoj: $hanloTaibunLekuPoj")
 
-        if (matchList.isEmpty()) {
-            return pageNumber
+            return hanloTaibunLekuPoj.replace("\\+E[0-9]+".toRegex(), "")
+        } else {
+            return hanloTaibunLekuPoj
         }
-
-        val stringBuilder = StringBuilder()
-        for (i in 0 until size) {
-            val matchResult: MatchResult = matchList[i]
-
-            var singlePageNumber = pageNumber.substring(matchResult.range.first, matchResult.range.last + 1)
-            singlePageNumber = singlePageNumber
-                    .toLowerCase()
-                    .replace("v", "b")
-
-            stringBuilder.append(singlePageNumber)
-
-            if (i < size - 1) {
-                stringBuilder.append(",")
-            }
-        }
-
-        return stringBuilder.toString()
     }
 
     private fun saveDict(formattedDictArray: List<TaijitDictOutEntry>) {
@@ -228,7 +209,7 @@ object TaiJitDictProcessor {
                 }
 
                 if (pojInputWord.contains("(")) {
-                    println("pojInputWord: $pojInputWord")
+                    println("pojInputDialect not handled: pojInputWord = $pojInputWord")
                 }
 
                 newEntryArray.add(pojUnicodeWord)

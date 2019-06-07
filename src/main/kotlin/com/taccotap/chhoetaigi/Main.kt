@@ -9,6 +9,7 @@ import com.taccotap.chhoetaigi.dicts.taihoa.TaihoaDictProcessor
 import com.taccotap.chhoetaigi.dicts.taijit.TaiJitDictProcessor
 import com.taccotap.chhoetaigi.dicts.taioanpehoegiku.TaioanPehoeKichhooGikuProcessor
 import com.taccotap.chhoetaigi.dicts.taioansitbutmialui.TaioanSitbutMialuiProcessor
+import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -48,6 +49,7 @@ fun main(args: Array<String>) {
     val total = count1 + count2 + count3 + count4 + count5 + count6 + count7 + count8 + count9
     println("Total: $total")
 
+//    testPojSianntiauPos()
 }
 
 //fun testPojSianntiauPos() {
@@ -59,37 +61,42 @@ fun main(args: Array<String>) {
 //    val a6 = listOf("aih", "auh", "iah", "ioh", "iuh", "uih", "oah", "oeh", "iauh", "oaih")
 //    val a7 = listOf("iap", "iat", "iak", "iok", "oat")
 //    val a8 = listOf("m", "n", "ng", "mh", "ngh")
+//    val a9 = listOf("giern", "pherh", "her", "hiriⁿ", "girn", "chere", "girn", "cherh", "chiriⁿ", "ir")
 //
 //    for (s in a1) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
 //    }
 //    for (s in a2) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
 //    }
 //    for (s in a3) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
 //    }
 //    for (s in a4) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
 //    }
 //    for (s in a5) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
 //    }
 //    for (s in a6) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
 //    }
 //    for (s in a7) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
 //    }
 //    for (s in a8) {
 //        val position = LomajiConverter.getPojSianntiauPosition(s)
-//        println("$s = $position")
+//        println("$s = ${position?.pos}")
+//    }
+//    for (s in a9) {
+//        val position = LomajiConverter.getPojSianntiauPosition(s)
+//        println("$s = ${position?.pos}")
 //    }
 //}
