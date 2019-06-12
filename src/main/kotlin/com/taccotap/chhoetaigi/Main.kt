@@ -9,7 +9,6 @@ import com.taccotap.chhoetaigi.dicts.taihoa.TaihoaDictProcessor
 import com.taccotap.chhoetaigi.dicts.taijit.TaiJitDictProcessor
 import com.taccotap.chhoetaigi.dicts.taioanpehoegiku.TaioanPehoeKichhooGikuProcessor
 import com.taccotap.chhoetaigi.dicts.taioansitbutmialui.TaioanSitbutMialuiProcessor
-import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

@@ -9,11 +9,11 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object KauiokpooTaigiDictProcessor {
-    private const val SRC_FILE_PATH = "KauiokpooTaigiDict20181002/"
-    private const val SRC_FILENAME_WORD = "words.xls"
+    private const val SRC_FILE_PATH = "KauiokpooTaigiDict20190610/"
+    private const val SRC_FILENAME_WORD = "wordsMain.xls"
     private const val SRC_FILENAME_ANOTHER_WORD = "wordsAnother.xls"
-    private const val SRC_FILENAME_HOAGI = "hoagi.xls"
-    private const val SRC_FILENAME_DESC = "desc.xls"
+    private const val SRC_FILENAME_HOAGI = "AIO.xls"
+    private const val SRC_FILENAME_DESC = "descs.xls"
     private const val SRC_FILENAME_EXAMPLE = "examples.xls"
 
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_KauiokpooTaigiSutian.csv"
@@ -45,7 +45,7 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_WORD")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "詞目總檔", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "holo", true)
 
         for (recordColumnArrayList in readXlsDictArrayList) {
             val dictSrcEntry = KauiokpooTaigiDictSrcEntry()
@@ -123,7 +123,7 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_ANOTHER_WORD")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "又音", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "iuim", true)
 
         for (recordColumnArrayList in readXlsDictArrayList) {
             val mainId = recordColumnArrayList[1]
@@ -158,10 +158,10 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_HOAGI")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "對應華語", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "fullTable", true)
 
         for (recordColumnArrayList in readXlsDictArrayList) {
-            val mainId = recordColumnArrayList[1]
+            val mainId = recordColumnArrayList[0]
             val dictSrcEntry = dict[mainId]
 
             if (dictSrcEntry == null) {
@@ -169,12 +169,12 @@ object KauiokpooTaigiDictProcessor {
                 continue
             }
 
-            val currentHoagi = recordColumnArrayList[2]
+            val currentHoagiString = recordColumnArrayList[5]
 
-            if (dictSrcEntry.hoabun.isEmpty()) {
-                dictSrcEntry.hoabun = currentHoagi
+            if (currentHoagiString.trim().isEmpty()) {
+                dictSrcEntry.hoabun = ""
             } else {
-                dictSrcEntry.hoabun = "${dictSrcEntry.hoabun}、$currentHoagi"
+                dictSrcEntry.hoabun = currentHoagiString
             }
         }
     }
@@ -186,7 +186,7 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_DESC")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "釋義", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "sikgi", true)
 
         for (recordColumnArrayList in readXlsDictArrayList) {
             val mainId = recordColumnArrayList[1]
@@ -267,7 +267,7 @@ object KauiokpooTaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource("$SRC_FILE_PATH$SRC_FILENAME_EXAMPLE")
         println("path: " + resource.path)
 
-        val readXlsDictArrayList = XlsxIO.read(resource.path, "例句", true)
+        val readXlsDictArrayList = XlsxIO.read(resource.path, "leku", true)
 
         val exampleMap = HashMap<String, HashMap<String, String>>()
         for (recordColumnArrayList in readXlsDictArrayList) {

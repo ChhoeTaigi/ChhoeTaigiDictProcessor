@@ -8,7 +8,7 @@ import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
 
 object TaiJitDictProcessor {
-    private const val SRC_FILENAME = "TaijitToaSutian_20190417_fix.csv"
+    private const val SRC_FILENAME = "TaijitToaSutian20190417_fix20190612.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaijitToaSutian.csv"
 
     fun run(): Int {
@@ -89,7 +89,7 @@ object TaiJitDictProcessor {
 
     private fun fixLekuTrailingNumber(hanloTaibunLekuPoj: String): String {
         if (hanloTaibunLekuPoj.contains("\\+E[0-9]+".toRegex())) {
-            println("hanloTaibunLekuPoj: $hanloTaibunLekuPoj")
+            println("handle special hanloTaibunLekuPoj: $hanloTaibunLekuPoj")
 
             return hanloTaibunLekuPoj.replace("\\+E[0-9]+".toRegex(), "")
         } else {
@@ -200,7 +200,7 @@ object TaiJitDictProcessor {
                 var tailoUnicodeWord = tailoUnicodeWords[i].trim()
                 var tailoInputWord = tailoInputWords[i].trim()
 
-                val regex = "\\(.\\)".toRegex()
+                val regex = "\\([^=()]*\\)".toRegex()
                 if (pojInputWord.contains(regex)) {
                     pojInputWord = pojInputWord.replace(regex, "")
                     pojUnicodeWord = pojUnicodeWord.replace(regex, "")
@@ -209,7 +209,7 @@ object TaiJitDictProcessor {
                 }
 
                 if (pojInputWord.contains("(")) {
-                    println("pojInputDialect not handled: pojInputWord = $pojInputWord")
+                    println("pojInputDialect special format: pojInputWord = $pojInputWord")
                 }
 
                 newEntryArray.add(pojUnicodeWord)
