@@ -54,15 +54,18 @@ class CsvIO {
         }
 
         fun write(path: String, recordsArrayList: ArrayList<ArrayList<String>>, csvFormat: CSVFormat) {
-            var fileWriter: FileWriter? = null
+            var writer: BufferedWriter? = null
             var csvPrinter: CSVPrinter? = null
 
             try {
                 val file = File(path.substringBeforeLast("/"))
                 file.mkdirs()
 
-                fileWriter = FileWriter(path)
-                csvPrinter = CSVPrinter(fileWriter, csvFormat.withQuoteMode(QuoteMode.ALL))
+                var osw = OutputStreamWriter(FileOutputStream(path),"UTF-8")
+                osw.write(String(byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte())))
+                writer = BufferedWriter(osw,1024)
+
+                csvPrinter = CSVPrinter(writer, csvFormat.withQuoteMode(QuoteMode.ALL))
 
                 for (records: ArrayList<String> in recordsArrayList) {
                     csvPrinter.printRecord(records)
@@ -74,8 +77,8 @@ class CsvIO {
                 e.printStackTrace()
             } finally {
                 try {
-                    fileWriter!!.flush()
-                    fileWriter.close()
+                    writer!!.flush()
+                    writer.close()
                     csvPrinter!!.close()
                 } catch (e: IOException) {
                     println("Flushing/closing error!")

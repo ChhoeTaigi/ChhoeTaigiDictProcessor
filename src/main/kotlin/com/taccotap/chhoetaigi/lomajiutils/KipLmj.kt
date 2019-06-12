@@ -5,11 +5,11 @@ import java.util.*
 
 object KipLmj {
 
-    // <tailo_unicode, tailo_number>
+    // <kiplmj_unicode, kiplmj_number>
     val sKiplmjUnicodeToKiplmjNumberHashMap: HashMap<String, String> = HashMap()
 
-    // <tailo_number, tailo_unicode>
-    val sTailoNumberToTailoUnicodeHashMap: HashMap<String, String> = HashMap()
+    // <kiplmj_number, kiplmj_unicode>
+    val sKiplmjNumberToKiplmjUnicodeHashMap: HashMap<String, String> = HashMap()
 
     init {
         // A
@@ -173,7 +173,7 @@ object KipLmj {
         sKiplmjUnicodeToKiplmjNumberHashMap["n̋g"] = "ng9"
 
         for ((key, value) in sKiplmjUnicodeToKiplmjNumberHashMap) {
-            sTailoNumberToTailoUnicodeHashMap[value] = key
+            sKiplmjNumberToKiplmjUnicodeHashMap[value] = key
         }
     }
 }

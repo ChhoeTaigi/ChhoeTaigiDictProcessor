@@ -602,7 +602,7 @@ object LomajiConverter {
 
     private fun replaceKiplmjToKiplmjSianntiauUnicodeWithSoojiSianntiau(kiplmjBoSianntiau: String, soojiSiautiauStringString: String, replaceCharString: String): String {
         val kiplmjCharNumber = replaceCharString + soojiSiautiauStringString
-        val kiplmjUnicode = KipLmj.sTailoNumberToTailoUnicodeHashMap[kiplmjCharNumber]
+        val kiplmjUnicode = KipLmj.sKiplmjNumberToKiplmjUnicodeHashMap[kiplmjCharNumber]
         return if (kiplmjUnicode != null) {
             kiplmjBoSianntiau.replaceFirst(replaceCharString, kiplmjUnicode, false)
         } else {
