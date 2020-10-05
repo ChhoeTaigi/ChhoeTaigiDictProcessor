@@ -1,4 +1,4 @@
-package com.taccotap.chhoetaigi.dicts.taibuntiongbun.entry
+package com.taccotap.chhoetaigi.dicts.maryknoll.entry
 
 import com.taccotap.chhoetaigi.entry.DictEntry
 

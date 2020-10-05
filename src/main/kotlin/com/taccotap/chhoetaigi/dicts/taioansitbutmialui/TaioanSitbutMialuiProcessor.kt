@@ -1,12 +1,11 @@
 package com.taccotap.chhoetaigi.dicts.taioansitbutmialui
 
-
 import com.taccotap.chhoetaigi.OutputSettings
 import com.taccotap.chhoetaigi.dicts.taioansitbutmialui.entry.TaioanSitbutMialuiOutEntry
 import com.taccotap.chhoetaigi.dicts.taioansitbutmialui.entry.TaioanSitbutMialuiSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
-import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
+import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object TaioanSitbutMialuiProcessor {
     private const val SRC_FILENAME = "TaioanSitbutMialui20180731.csv"
@@ -21,7 +20,7 @@ object TaioanSitbutMialuiProcessor {
 
     private fun loadDict(): ArrayList<TaioanSitbutMialuiSrcEntry> {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
-        println("path: " + resource.path)
+        println("path: " + resource!!.path)
 
         val readCsvDictArrayList = CsvIO.read(resource.path, true)
 
@@ -34,7 +33,7 @@ object TaioanSitbutMialuiProcessor {
             srcEntry.id = index.toString()
             index++
 
-            srcEntry.kiplmj = recordColumnArrayList[0]
+            srcEntry.kip = recordColumnArrayList[0]
             srcEntry.hanjiTaibun = recordColumnArrayList[1]
             srcEntry.pageNumber = recordColumnArrayList[2]
 
@@ -50,16 +49,19 @@ object TaioanSitbutMialuiProcessor {
         for (srcEntry: TaioanSitbutMialuiSrcEntry in dictArray) {
             val outEntry = TaioanSitbutMialuiOutEntry()
 
-            srcEntry.kiplmj = srcEntry.kiplmj.toLowerCase().capitalize()
-            if (srcEntry.kiplmj == "€") {
+            srcEntry.kip = srcEntry.kip.toLowerCase().capitalize()
+            if (srcEntry.kip == "€") {
                 continue
             }
 
             outEntry.id = srcEntry.id
-            outEntry.pojInput = LomajiConverter.kiplmjInputToPojInput(srcEntry.kiplmj)
-            outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(outEntry.pojInput, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.kiplmjInput = srcEntry.kiplmj
-            outEntry.kiplmjUnicode = LomajiConverter.convertLomajiInputString(srcEntry.kiplmj, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_KIPLMJ_UNICODE)
+
+            outEntry.pojInput = TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kip)
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+
+            outEntry.kipInput = srcEntry.kip
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kip)
+
             outEntry.hanjiTaibun = srcEntry.hanjiTaibun.replace("€", "？")
             outEntry.pageNumber = srcEntry.pageNumber
 
@@ -81,8 +83,8 @@ object TaioanSitbutMialuiProcessor {
             outEntry.pojUnicode.let { entryArray.add(it) }
             outEntry.pojInput.let { entryArray.add(it) }
 
-            outEntry.kiplmjUnicode.let { entryArray.add(it) }
-            outEntry.kiplmjInput.let { entryArray.add(it) }
+            outEntry.kipUnicode.let { entryArray.add(it) }
+            outEntry.kipInput.let { entryArray.add(it) }
 
             outEntry.hanjiTaibun.let { entryArray.add(it) }
 
@@ -98,8 +100,8 @@ object TaioanSitbutMialuiProcessor {
                 "poj_unicode",
                 "poj_input",
 
-                "kiplmj_unicode",
-                "kiplmj_input",
+                "kip_unicode",
+                "kip_input",
 
                 "hanji_taibun",
 

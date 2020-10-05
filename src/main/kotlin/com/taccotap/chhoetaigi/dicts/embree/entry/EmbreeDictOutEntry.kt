@@ -8,12 +8,15 @@ open class EmbreeDictOutEntry : DictEntry() {
     lateinit var pojUnicode: String
     lateinit var pojInput: String
 
-    lateinit var tailoUnicode: String
-    lateinit var tailoInput: String
+    lateinit var kipUnicode: String
+    lateinit var kipInput: String
 
     lateinit var abbreviations: String
     lateinit var nounClassifiers: String
     lateinit var reduplication: String
+
+    lateinit var synonym: String
+    lateinit var cf: String
 
     lateinit var hoabun: String
     lateinit var englishDescriptions: String

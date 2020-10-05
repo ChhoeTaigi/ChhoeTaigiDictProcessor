@@ -8,8 +8,8 @@ open class TaioanSitbutMialuiOutEntry : DictEntry() {
     lateinit var pojUnicode: String
     lateinit var pojInput: String
 
-    lateinit var kiplmjUnicode: String
-    lateinit var kiplmjInput: String
+    lateinit var kipUnicode: String
+    lateinit var kipInput: String
 
     lateinit var hanjiTaibun: String
 

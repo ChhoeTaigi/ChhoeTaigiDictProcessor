@@ -1,15 +1,19 @@
 package com.taccotap.chhoetaigi.dicts.maryknoll
 
 import com.taccotap.chhoetaigi.OutputSettings
-import com.taccotap.chhoetaigi.dicts.taibuntiongbun.entry.MaryknollTaiEngDictOutEntry
-import com.taccotap.chhoetaigi.dicts.taibuntiongbun.entry.MaryknollTaiEngDictSrcEntry
+import com.taccotap.chhoetaigi.dicts.maryknoll.entry.MaryknollTaiEngDictOutEntry
+import com.taccotap.chhoetaigi.dicts.maryknoll.entry.MaryknollTaiEngDictSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
 import com.taccotap.chhoetaigi.io.XlsxIO
-import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
+import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
+import tw.taibunkesimi.lomajichoanoann.pojfix.PojInputFix
+import tw.taibunkesimi.lomajichoanoann.pojfix.PojInputFixType
+import java.util.*
+import kotlin.collections.ArrayList
 
 object MaryknollTaiEngDictProcessor {
-    private const val SRC_FILENAME = "Mkdictionary2013.xls"
+    private const val SRC_FILENAME = "Mkdictionary2013_fix20201005.xls"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_MaryknollTaiengSutian.csv"
 
     fun run(): Int {
@@ -21,7 +25,7 @@ object MaryknollTaiEngDictProcessor {
 
     private fun loadDict(): ArrayList<MaryknollTaiEngDictSrcEntry> {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
-        println("path: " + resource.path)
+        println("path: " + resource!!.path)
 
         val readXlsDictArrayList = XlsxIO.read(resource.path, "TD", true)
 
@@ -29,14 +33,22 @@ object MaryknollTaiEngDictProcessor {
         for (recordColumnArrayList in readXlsDictArrayList) {
             val srcEntry = MaryknollTaiEngDictSrcEntry()
 
-            srcEntry.id = recordColumnArrayList.get(0)
+            srcEntry.id = recordColumnArrayList[0]
 
-            var fixPoj = recordColumnArrayList[1]
+            var fixedPoj = recordColumnArrayList[1]
                     .replace("::", "")  // remove "::" symbol for subcatogory
                     .replace("*", "nn")  // fix POJ
                     .replace("+", "o")  // fix POJ
-            fixPoj = LomajiConverter.pojInputStringFix(fixPoj)
-            srcEntry.poj = fixPoj
+                    .replace("11", "1")
+                    .replace("22", "2")
+                    .replace("33", "3")
+                    .replace("44", "4")
+                    .replace("55", "5")
+                    .replace("77", "7")
+                    .replace("88", "8")
+            fixedPoj = PojInputFix.fixKuikuOnlyPojWithDelimiter(fixedPoj, EnumSet.of(PojInputFixType.ALL))
+
+            srcEntry.poj = fixedPoj
 
             srcEntry.hoabun = recordColumnArrayList[2]
             srcEntry.englishDescriptions = recordColumnArrayList[3]
@@ -60,9 +72,9 @@ object MaryknollTaiEngDictProcessor {
             idCount++
 
             outEntry.pojInput = srcEntry.poj
-            outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.kiplmjInput = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_INPUT)
-            outEntry.kiplmjUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj)
+            outEntry.kipInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj)
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
             outEntry.hoabun = srcEntry.hoabun
             outEntry.englishDescriptions = srcEntry.englishDescriptions
             outEntry.pageNumber = srcEntry.pageNumber
@@ -84,8 +96,8 @@ object MaryknollTaiEngDictProcessor {
             outEntry.pojUnicode.let { entryArray.add(it) }
             outEntry.pojInput.let { entryArray.add(it) }
 
-            outEntry.kiplmjUnicode.let { entryArray.add(it) }
-            outEntry.kiplmjInput.let { entryArray.add(it) }
+            outEntry.kipUnicode.let { entryArray.add(it) }
+            outEntry.kipInput.let { entryArray.add(it) }
 
             outEntry.hoabun.let { entryArray.add(it) }
             outEntry.englishDescriptions.let { entryArray.add(it) }
@@ -102,8 +114,8 @@ object MaryknollTaiEngDictProcessor {
                 "poj_unicode",
                 "poj_input",
 
-                "kiplmj_unicode",
-                "kiplmj_input",
+                "kip_unicode",
+                "kip_input",
 
                 "hoabun",
                 "english_descriptions",

@@ -16,13 +16,13 @@ open class KamDictOutEntry : DictEntry() {
     lateinit var pojKaisoeh: String
     lateinit var hanloTaibunKaisoehPoj: String
 
-    lateinit var kiplmjUnicode: String
-    lateinit var kiplmjInput: String
+    lateinit var kipUnicode: String
+    lateinit var kipInput: String
 
-    lateinit var kiplmjBunimUnicode: String
-    lateinit var kiplmjBunimInput: String
+    lateinit var kipBunimUnicode: String
+    lateinit var kipBunimInput: String
 
-    lateinit var kiplmjKaisoeh: String
+    lateinit var kipKaisoeh: String
 
     lateinit var pageNumber: String
 }

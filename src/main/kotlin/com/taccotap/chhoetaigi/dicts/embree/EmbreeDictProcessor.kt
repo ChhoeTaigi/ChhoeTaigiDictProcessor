@@ -5,11 +5,11 @@ import com.taccotap.chhoetaigi.dicts.embree.entry.EmbreeDictOutEntry
 import com.taccotap.chhoetaigi.dicts.embree.entry.EmbreeDictSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
 import com.taccotap.chhoetaigi.io.XlsxIO
-import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import org.apache.commons.csv.CSVFormat
+import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object EmbreeDictProcessor {
-    private const val SRC_FILENAME = "EmbreeTaigiDict20190616.xlsx"
+    private const val SRC_FILENAME = "EmbreeTaigiDict20201004.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_EmbreeTaigiSutian.csv"
 
     fun run(): Int {
@@ -21,7 +21,7 @@ object EmbreeDictProcessor {
 
     private fun loadDict(): ArrayList<EmbreeDictSrcEntry> {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
-        println("path: " + resource.path)
+        println("path: " + resource!!.path)
 
         val readXlsDictArrayList = XlsxIO.read(resource.path, "Dict", true)
 
@@ -31,10 +31,12 @@ object EmbreeDictProcessor {
 
             srcEntry.poj = recordColumnArrayList[0].replace("*", "") // Remove * symbol for non-Taipei pronunciation
             srcEntry.hoabun = recordColumnArrayList[1]
-            srcEntry.abbreviations = "${recordColumnArrayList[2]} ${recordColumnArrayList[3]}"
-            srcEntry.nounClassifiers = recordColumnArrayList[4]
-            srcEntry.reduplication = recordColumnArrayList[5]
-            srcEntry.englishDescriptions = recordColumnArrayList[6]
+            srcEntry.abbreviations = recordColumnArrayList[2]
+            srcEntry.nounClassifiers = recordColumnArrayList[3]
+            srcEntry.reduplication = recordColumnArrayList[4]
+            srcEntry.synonym = recordColumnArrayList[5]
+            srcEntry.cf = recordColumnArrayList[6]
+            srcEntry.englishDescriptions = recordColumnArrayList[7]
             srcEntry.pageNumber = "" // TODO: Need to add page number
 
             dictArray.add(srcEntry)
@@ -56,15 +58,19 @@ object EmbreeDictProcessor {
             idCount++
 
             outEntry.pojInput = srcEntry.poj
-            outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.tailoInput = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_INPUT)
-            outEntry.tailoUnicode = LomajiConverter.convertLomajiInputString(srcEntry.poj, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj)
+            outEntry.kipInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj)
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToKipUnicode(srcEntry.poj)
 
             outEntry.hoabun = srcEntry.hoabun
             outEntry.abbreviations = srcEntry.abbreviations
-            outEntry.nounClassifiers = LomajiConverter.convertLomajiInputString(srcEntry.nounClassifiers, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.reduplication = LomajiConverter.convertLomajiInputString(srcEntry.reduplication, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.englishDescriptions = srcEntry.englishDescriptions
+            outEntry.nounClassifiers = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.nounClassifiers)
+            outEntry.reduplication = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.reduplication)
+
+            outEntry.synonym = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.synonym)
+            outEntry.cf = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.cf)
+
+            outEntry.englishDescriptions = TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.englishDescriptions)
             outEntry.pageNumber = srcEntry.pageNumber
 
             processedDictArray.add(outEntry)
@@ -84,12 +90,15 @@ object EmbreeDictProcessor {
             outEntry.pojUnicode.let { entryArray.add(it) }
             outEntry.pojInput.let { entryArray.add(it) }
 
-            outEntry.tailoUnicode.let { entryArray.add(it) }
-            outEntry.tailoInput.let { entryArray.add(it) }
+            outEntry.kipUnicode.let { entryArray.add(it) }
+            outEntry.kipInput.let { entryArray.add(it) }
 
             outEntry.abbreviations.let { entryArray.add(it) }
             outEntry.nounClassifiers.let { entryArray.add(it) }
             outEntry.reduplication.let { entryArray.add(it) }
+
+            outEntry.synonym.let { entryArray.add(it) }
+            outEntry.cf.let { entryArray.add(it) }
 
             outEntry.hoabun.let { entryArray.add(it) }
             outEntry.englishDescriptions.let { entryArray.add(it) }
@@ -106,12 +115,15 @@ object EmbreeDictProcessor {
                 "poj_unicode",
                 "poj_input",
 
-                "kiplmj_unicode",
-                "kiplmj_input",
+                "kip_unicode",
+                "kip_input",
 
                 "abbreviations",
                 "noun_classifiers",
                 "reduplication",
+
+                "synonym",
+                "cf",
 
                 "hoabun",
                 "english_descriptions",

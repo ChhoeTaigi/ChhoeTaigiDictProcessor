@@ -8,6 +8,8 @@ open class EmbreeDictSrcEntry : DictEntry() {
     lateinit var abbreviations: String
     lateinit var nounClassifiers: String
     lateinit var reduplication: String
+    lateinit var synonym: String
+    lateinit var cf: String
     lateinit var englishDescriptions: String
     lateinit var pageNumber: String
 }

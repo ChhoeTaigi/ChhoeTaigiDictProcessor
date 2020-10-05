@@ -5,7 +5,7 @@ import com.taccotap.chhoetaigi.entry.DictEntry
 open class KamDictSrcEntry : DictEntry() {
     lateinit var id: String
     lateinit var poj: String
-    //    lateinit var pojDialect: String
+    //    lateinit var pojOther: String
     lateinit var hanjiTaibun: String
     lateinit var pojBunim: String
     lateinit var pojKaisoeh: String

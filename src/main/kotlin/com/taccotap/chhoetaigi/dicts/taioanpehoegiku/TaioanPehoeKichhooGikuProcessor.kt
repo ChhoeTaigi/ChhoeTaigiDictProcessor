@@ -4,47 +4,49 @@ import com.taccotap.chhoetaigi.OutputSettings
 import com.taccotap.chhoetaigi.dicts.taioanpehoegiku.entry.TaioanPehoeKichhooGikuOutEntry
 import com.taccotap.chhoetaigi.dicts.taioanpehoegiku.entry.TaioanPehoeKichhooGikuSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
-import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
+import com.taccotap.chhoetaigi.io.XlsxIO
 import org.apache.commons.csv.CSVFormat
+import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object TaioanPehoeKichhooGikuProcessor {
-    private const val SRC_FILENAME = "TaioanPehoeKichhooGiku20180618.csv"
+    private const val SRC_FILENAME = "TaioanPehoeKichhooGiku20201005.xls"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaioanPehoeKichhooGiku.csv"
 
     fun run(): Int {
         val dict = loadDict()
         val processedDictArray = processDict(dict)
         saveDict(processedDictArray)
-        saveLomajiSearchTable(processedDictArray)
         return processedDictArray.count()
     }
 
     private fun loadDict(): ArrayList<TaioanPehoeKichhooGikuSrcEntry> {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
-        println("path: " + resource.path)
+        println("path: " + resource!!.path)
 
-        val readCsvDictArrayList = CsvIO.read(resource.path, true)
+        val readXlsxDictArrayList = XlsxIO.read(resource.path, "Titeng", true)
 
         val dictArray = ArrayList<TaioanPehoeKichhooGikuSrcEntry>()
-        for (recordColumnArrayList in readCsvDictArrayList) {
+        for (recordColumnArrayList in readXlsxDictArrayList) {
             val srcEntry = TaioanPehoeKichhooGikuSrcEntry()
 
-            srcEntry.kiplmj = recordColumnArrayList[0]
-            srcEntry.hoabun = recordColumnArrayList[1]
-            srcEntry.pageNumber = recordColumnArrayList[2]
+            srcEntry.kip = recordColumnArrayList[0]
+            srcEntry.kipOther = recordColumnArrayList[1]
 
-            val str3 = recordColumnArrayList[3]
-            val str4 = recordColumnArrayList[4]
+            srcEntry.hoabun = recordColumnArrayList[2]
 
-            if (str3.isEmpty()) {
-                srcEntry.kiplmjDialect = ""
-            } else {
-                if (str4.isEmpty()) {
-                    srcEntry.kiplmjDialect = str3
-                } else {
-                    srcEntry.kiplmjDialect = "$str3/$str4"
-                }
-            }
+            srcEntry.engbun = recordColumnArrayList[3]
+            srcEntry.engbunChukai = recordColumnArrayList[4]
+
+            srcEntry.nounClassifiers = recordColumnArrayList[5]
+            srcEntry.opposite = recordColumnArrayList[6]
+            srcEntry.exampleSu = recordColumnArrayList[7]
+            srcEntry.fromSu = recordColumnArrayList[8]
+
+            srcEntry.exampleKuTaibun = recordColumnArrayList[9]
+            srcEntry.exampleKuHoabun = recordColumnArrayList[10]
+            srcEntry.exampleKuEngbun = recordColumnArrayList[11]
+
+            srcEntry.pageNumber = recordColumnArrayList[12]
 
             dictArray.add(srcEntry)
         }
@@ -63,18 +65,38 @@ object TaioanPehoeKichhooGikuProcessor {
             outEntry.id = idCount.toString()
             idCount++
 
-            outEntry.kiplmjInput = srcEntry.kiplmj
-            outEntry.kiplmjUnicode = LomajiConverter.convertLomajiInputString(srcEntry.kiplmj, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_KIPLMJ_UNICODE)
-            outEntry.kiplmjInputDialect = srcEntry.kiplmjDialect
-            outEntry.kiplmjUnicodeDialect = LomajiConverter.convertLomajiInputString(srcEntry.kiplmjDialect, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_KIPLMJ_UNICODE)
+            outEntry.kipInput = srcEntry.kip
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kip)
 
-            outEntry.pojInput = LomajiConverter.convertLomajiInputString(srcEntry.kiplmj, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_INPUT)
-            outEntry.pojUnicode = LomajiConverter.convertLomajiInputString(srcEntry.kiplmj, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_UNICODE)
-            outEntry.pojInputDialect = LomajiConverter.convertLomajiInputString(srcEntry.kiplmjDialect, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_INPUT)
-            outEntry.pojUnicodeDialect = LomajiConverter.convertLomajiInputString(srcEntry.kiplmjDialect, LomajiConverter.ConvertLomajiInputStringCase.CASE_KIPLMJ_INPUT_TO_POJ_UNICODE)
+            outEntry.kipInputOther = srcEntry.kipOther
+            outEntry.kipUnicodeOther = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kipOther)
+
+            outEntry.pojInput = TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kip)
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+
+            outEntry.pojInputOther = TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kipOther)
+            outEntry.pojUnicodeOther = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInputOther)
 
             outEntry.hoabun = srcEntry.hoabun
+
+            outEntry.engbun = srcEntry.engbun
+            outEntry.engbunChukai = srcEntry.engbunChukai
+
+            outEntry.nounClassifiers = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.nounClassifiers)
+            outEntry.opposite = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.opposite)
+            outEntry.exampleSu = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.exampleSu)
+            outEntry.fromSu = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.fromSu)
+
             outEntry.pageNumber = srcEntry.pageNumber
+//            println("srcEntry.pageNumber:${srcEntry.pageNumber}")
+
+            if (srcEntry.pageNumber.toInt() in 441..660) {
+                outEntry.exampleKuTaibunPoj = TaigiLomajiKuikuChoanoann.onlyKipUnicodeToPojUnicode(srcEntry.exampleKuTaibun)
+            } else {
+                outEntry.exampleKuTaibunPoj = srcEntry.exampleKuTaibun
+            }
+            outEntry.exampleKuHoabun = srcEntry.exampleKuHoabun
+            outEntry.exampleKuEngbun = srcEntry.exampleKuEngbun
 
             processedDictArray.add(outEntry)
         }
@@ -91,16 +113,28 @@ object TaioanPehoeKichhooGikuProcessor {
             outEntry.id.let { entryArray.add(it) }
 
             outEntry.pojUnicode.let { entryArray.add(it) }
-            outEntry.pojUnicodeDialect.let { entryArray.add(it) }
+            outEntry.pojUnicodeOther.let { entryArray.add(it) }
             outEntry.pojInput.let { entryArray.add(it) }
-            outEntry.pojInputDialect.let { entryArray.add(it) }
+            outEntry.pojInputOther.let { entryArray.add(it) }
 
-            outEntry.kiplmjUnicode.let { entryArray.add(it) }
-            outEntry.kiplmjUnicodeDialect.let { entryArray.add(it) }
-            outEntry.kiplmjInput.let { entryArray.add(it) }
-            outEntry.kiplmjInputDialect.let { entryArray.add(it) }
+            outEntry.kipUnicode.let { entryArray.add(it) }
+            outEntry.kipUnicodeOther.let { entryArray.add(it) }
+            outEntry.kipInput.let { entryArray.add(it) }
+            outEntry.kipInputOther.let { entryArray.add(it) }
 
             outEntry.hoabun.let { entryArray.add(it) }
+
+            outEntry.engbun.let { entryArray.add(it) }
+            outEntry.engbunChukai.let { entryArray.add(it) }
+
+            outEntry.nounClassifiers.let { entryArray.add(it) }
+            outEntry.opposite.let { entryArray.add(it) }
+            outEntry.exampleSu.let { entryArray.add(it) }
+            outEntry.fromSu.let { entryArray.add(it) }
+
+            outEntry.exampleKuTaibunPoj.let { entryArray.add(it) }
+            outEntry.exampleKuHoabun.let { entryArray.add(it) }
+            outEntry.exampleKuEngbun.let { entryArray.add(it) }
 
             outEntry.pageNumber.let { entryArray.add(it) }
 
@@ -112,71 +146,31 @@ object TaioanPehoeKichhooGikuProcessor {
                 "id",
 
                 "poj_unicode",
-                "poj_unicode_dialect",
+                "poj_unicode_other",
                 "poj_input",
-                "poj_input_dialect",
+                "poj_input_other",
 
-                "kiplmj_unicode",
-                "kiplmj_unicode_dialect",
-                "kiplmj_input",
-                "kiplmj_input_dialect",
+                "kip_unicode",
+                "kip_unicode_other",
+                "kip_input",
+                "kip_input_other",
 
                 "hoabun",
+
+                "engbun",
+                "engbun_chukai",
+
+                "noun_classifiers",
+                "opposite",
+                "example_su",
+                "from_su",
+
+                "example_ku_taibun_poj",
+                "example_ku_hoabun",
+                "example_ku_engbun",
 
                 "page_number")
 
         CsvIO.write(path, dict, csvFormat)
-    }
-
-    private fun saveLomajiSearchTable(formattedDictArray: List<TaioanPehoeKichhooGikuOutEntry>) {
-        val dict: ArrayList<ArrayList<String>> = ArrayList()
-
-        for (taioanPehoeKichhooGikuOutEntry: TaioanPehoeKichhooGikuOutEntry in formattedDictArray) {
-            generateLomajiSearchData(taioanPehoeKichhooGikuOutEntry, dict)
-        }
-
-        val path = OutputSettings.SAVE_FOLDER_DATABASE + OutputSettings.timestamp + OutputSettings.SAVE_FOLDER_LMJ_SEARCH_TABLE + SAVE_FILENAME_PATH
-        val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "poj_unicode",
-                "poj_input",
-                "kiplmj_unicode",
-                "kiplmj_input",
-                "main_id")
-
-        CsvIO.write(path, dict, csvFormat)
-    }
-
-    private fun generateLomajiSearchData(taioanPehoeKichhooGikuOutEntry: TaioanPehoeKichhooGikuOutEntry, dict: ArrayList<ArrayList<String>>) {
-        // handle default lomaji
-        val entryArray: ArrayList<String> = ArrayList()
-
-        taioanPehoeKichhooGikuOutEntry.pojUnicode.let { entryArray.add(it) }
-        taioanPehoeKichhooGikuOutEntry.pojInput.let { entryArray.add(it) }
-        taioanPehoeKichhooGikuOutEntry.kiplmjUnicode.let { entryArray.add(it) }
-        taioanPehoeKichhooGikuOutEntry.kiplmjInput.let { entryArray.add(it) }
-        taioanPehoeKichhooGikuOutEntry.id.let { entryArray.add(it) }
-
-        dict.add(entryArray)
-
-        // handle other lomaji
-        if (taioanPehoeKichhooGikuOutEntry.pojInputDialect.isNotEmpty()) {
-            val pojUnicodeWords: List<String> = taioanPehoeKichhooGikuOutEntry.pojUnicodeDialect.split("/|,".toRegex())
-            val pojInputWords: List<String> = taioanPehoeKichhooGikuOutEntry.pojInputDialect.split("/|,".toRegex())
-            val tailoUnicodeWords: List<String> = taioanPehoeKichhooGikuOutEntry.kiplmjUnicodeDialect.split("/|,".toRegex())
-            val tailoInputWords: List<String> = taioanPehoeKichhooGikuOutEntry.kiplmjInputDialect.split("/|,".toRegex())
-
-            var count = pojInputWords.size
-            for (i in 0 until count) {
-                val newEntryArray: ArrayList<String> = ArrayList()
-
-                newEntryArray.add(pojUnicodeWords[i].trim())
-                newEntryArray.add(pojInputWords[i].trim())
-                newEntryArray.add(tailoUnicodeWords[i].trim())
-                newEntryArray.add(tailoInputWords[i].trim())
-                newEntryArray.add(taioanPehoeKichhooGikuOutEntry.id)
-
-                dict.add(newEntryArray)
-            }
-        }
     }
 }

@@ -4,12 +4,12 @@ import com.taccotap.chhoetaigi.OutputSettings
 import com.taccotap.chhoetaigi.dicts.kam.entry.KamDictOutEntry
 import com.taccotap.chhoetaigi.dicts.kam.entry.KamDictSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
-import com.taccotap.chhoetaigi.lomajiutils.LomajiConverter
 import com.taccotap.chhoetaigi.utils.StringUtils
 import org.apache.commons.csv.CSVFormat
+import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object KamDictProcessor {
-    private const val SRC_FILENAME = "KamJitian_SBA_20180607_fixed.csv"
+    private const val SRC_FILENAME = "KamJitian_SBA_20201004.csv"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_KamJitian.csv"
 
     fun run(): Int {
@@ -21,7 +21,7 @@ object KamDictProcessor {
 
     private fun loadDict(): ArrayList<KamDictSrcEntry> {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
-        println("path: " + resource.path)
+        println("path: " + resource!!.path)
 
         val readCsvDictArrayList = CsvIO.read(resource.path, true)
 
@@ -76,32 +76,29 @@ object KamDictProcessor {
         for (srcEntry: KamDictSrcEntry in dictArray) {
             val outEntry = KamDictOutEntry()
 
-            // fix lomaji
-            srcEntry.poj = LomajiConverter.pojInputStringFix(srcEntry.poj)
-            srcEntry.pojBunim = LomajiConverter.pojInputStringFix(srcEntry.pojBunim)
-            srcEntry.pojKaisoeh = LomajiConverter.pojInputStringFix(srcEntry.pojKaisoeh)
-            srcEntry.hanloTaibunKaisoehPoj = LomajiConverter.pojInputStringFix(srcEntry.hanloTaibunKaisoehPoj)
+//            println("entry: ${srcEntry.id}")
 
             // parse
             outEntry.id = srcEntry.id
 
             outEntry.pojInput = srcEntry.poj
-            outEntry.pojUnicode = LomajiConverter.pojInputToPojUnicode(srcEntry.poj)
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj)
 
             outEntry.hanjiTaibun = srcEntry.hanjiTaibun
 
             outEntry.pojBunimInput = srcEntry.pojBunim
-            outEntry.pojBunimUnicode = LomajiConverter.pojInputToPojUnicode(srcEntry.pojBunim)
+            outEntry.pojBunimUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.pojBunim)
 
-            outEntry.kiplmjInput = LomajiConverter.pojInputToKiplmjInput(srcEntry.poj)
-            outEntry.kiplmjUnicode = LomajiConverter.kiplmjInputToKiplmjUnicode(outEntry.kiplmjInput)
+            outEntry.kipInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj)
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
 
-            outEntry.kiplmjBunimInput = LomajiConverter.pojInputToKiplmjInput(srcEntry.pojBunim)
-            outEntry.kiplmjBunimUnicode = LomajiConverter.kiplmjInputToKiplmjUnicode(outEntry.kiplmjBunimInput)
+            outEntry.kipBunimInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.pojBunim)
+            outEntry.kipBunimUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipBunimInput)
 
-            outEntry.pojKaisoeh = LomajiConverter.convertLomajiInputString(srcEntry.pojKaisoeh, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_POJ_UNICODE)
-            outEntry.kiplmjKaisoeh = LomajiConverter.convertLomajiInputString(srcEntry.pojKaisoeh, LomajiConverter.ConvertLomajiInputStringCase.CASE_POJ_INPUT_TO_KIPLMJ_UNICODE)
-            outEntry.hanloTaibunKaisoehPoj = srcEntry.hanloTaibunKaisoehPoj
+            outEntry.pojKaisoeh = TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.pojKaisoeh)
+            outEntry.kipKaisoeh = TaigiLomajiKuikuChoanoann.hybridKipInputToKipUnicode(srcEntry.pojKaisoeh)
+
+            outEntry.hanloTaibunKaisoehPoj = TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.hanloTaibunKaisoehPoj)
             outEntry.pageNumber = srcEntry.pageNumber
 
             processedDictArray.add(outEntry)
@@ -129,13 +126,13 @@ object KamDictProcessor {
             outEntry.pojKaisoeh.let { entryArray.add(it) }
             outEntry.hanloTaibunKaisoehPoj.let { entryArray.add(it) }
 
-            outEntry.kiplmjUnicode.let { entryArray.add(it) }
-            outEntry.kiplmjInput.let { entryArray.add(it) }
+            outEntry.kipUnicode.let { entryArray.add(it) }
+            outEntry.kipInput.let { entryArray.add(it) }
 
-            outEntry.kiplmjBunimUnicode.let { entryArray.add(it) }
-            outEntry.kiplmjBunimInput.let { entryArray.add(it) }
+            outEntry.kipBunimUnicode.let { entryArray.add(it) }
+            outEntry.kipBunimInput.let { entryArray.add(it) }
 
-            outEntry.kiplmjKaisoeh.let { entryArray.add(it) }
+            outEntry.kipKaisoeh.let { entryArray.add(it) }
 
             outEntry.pageNumber.let { entryArray.add(it) }
 
@@ -157,13 +154,13 @@ object KamDictProcessor {
                 "poj_kaisoeh",
                 "hanlo_taibun_kaisoeh_poj",
 
-                "kiplmj_unicode",
-                "kiplmj_input",
+                "kip_unicode",
+                "kip_input",
 
-                "kiplmj_bunim_unicode",
-                "kiplmj_bunim_input",
+                "kip_bunim_unicode",
+                "kip_bunim_input",
 
-                "kiplmj_kaisoeh",
+                "kip_kaisoeh",
 
                 "page_number")
 

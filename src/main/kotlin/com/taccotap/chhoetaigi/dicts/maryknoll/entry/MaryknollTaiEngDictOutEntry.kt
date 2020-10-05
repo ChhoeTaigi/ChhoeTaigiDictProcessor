@@ -1,4 +1,4 @@
-package com.taccotap.chhoetaigi.dicts.taibuntiongbun.entry
+package com.taccotap.chhoetaigi.dicts.maryknoll.entry
 
 import com.taccotap.chhoetaigi.entry.DictEntry
 
@@ -8,8 +8,8 @@ open class MaryknollTaiEngDictOutEntry : DictEntry() {
     lateinit var pojUnicode: String
     lateinit var pojInput: String
 
-    lateinit var kiplmjUnicode: String
-    lateinit var kiplmjInput: String
+    lateinit var kipUnicode: String
+    lateinit var kipInput: String
 
     lateinit var hoabun: String
     lateinit var englishDescriptions: String

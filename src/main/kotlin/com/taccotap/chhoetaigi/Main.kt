@@ -9,6 +9,7 @@ import com.taccotap.chhoetaigi.dicts.taihoa.TaihoaDictProcessor
 import com.taccotap.chhoetaigi.dicts.taijit.TaiJitDictProcessor
 import com.taccotap.chhoetaigi.dicts.taioanpehoegiku.TaioanPehoeKichhooGikuProcessor
 import com.taccotap.chhoetaigi.dicts.taioansitbutmialui.TaioanSitbutMialuiProcessor
+import com.taccotap.chhoetaigi.dicts.tjpehoe.TJPehoeDictProcessor
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -17,38 +18,44 @@ object OutputSettings {
     val timestamp = dateFormatter.format(LocalDateTime.now())
 
     const val SAVE_FOLDER_DATABASE = "./output_database/"
-    const val SAVE_FOLDER_LMJ_SEARCH_TABLE = "/lomaji_search_table"
 }
 
 fun main(args: Array<String>) {
-    val count1 = EmbreeDictProcessor.run()
-    val count2 = ITaigiDictProcessor.run()
-    val count3 = KamDictProcessor.run()
-    val count4 = KauiokpooTaigiDictProcessor.run()
-    val count5 = MaryknollTaiEngDictProcessor.run()
-    val count6 = TaihoaDictProcessor.run()
-    val count7 = TaiJitDictProcessor.run()
-    val count8 = TaioanPehoeKichhooGikuProcessor.run()
-    val count9 = TaioanSitbutMialuiProcessor.run()
+//    val count1 = EmbreeDictProcessor.run()
+//    val count2 = ITaigiDictProcessor.run()
+//    val count3 = KamDictProcessor.run()
+//    val count4 = KauiokpooTaigiDictProcessor.run()
+//    val count5 = MaryknollTaiEngDictProcessor.run()
+//    val count6 = TaihoaDictProcessor.run()
+//    val count7 = TaiJitDictProcessor.run()
+//    val count8 = TaioanPehoeKichhooGikuProcessor.run()
+//    val count9 = TaioanSitbutMialuiProcessor.run()
+
+    val bookCount1 = TJPehoeDictProcessor.run()
 
     println()
 
-    println("${EmbreeDictProcessor.javaClass.simpleName}: $count1")
-    println("${ITaigiDictProcessor.javaClass.simpleName}: $count2")
-    println("${KamDictProcessor.javaClass.simpleName}: $count3")
-    println("${KauiokpooTaigiDictProcessor.javaClass.simpleName}: $count4")
-    println("${MaryknollTaiEngDictProcessor.javaClass.simpleName}: $count5")
-    println("${TaihoaDictProcessor.javaClass.simpleName}: $count6")
-    println("${TaiJitDictProcessor.javaClass.simpleName}: $count7")
-    println("${TaioanPehoeKichhooGikuProcessor.javaClass.simpleName}: $count8")
-    println("${TaioanSitbutMialuiProcessor.javaClass.simpleName}: $count9")
+//    println("${EmbreeDictProcessor.javaClass.simpleName}: $count1")
+//    println("${ITaigiDictProcessor.javaClass.simpleName}: $count2")
+//    println("${KamDictProcessor.javaClass.simpleName}: $count3")
+//    println("${KauiokpooTaigiDictProcessor.javaClass.simpleName}: $count4")
+//    println("${MaryknollTaiEngDictProcessor.javaClass.simpleName}: $count5")
+//    println("${TaihoaDictProcessor.javaClass.simpleName}: $count6")
+//    println("${TaiJitDictProcessor.javaClass.simpleName}: $count7")
+//    println("${TaioanPehoeKichhooGikuProcessor.javaClass.simpleName}: $count8")
+//    println("${TaioanSitbutMialuiProcessor.javaClass.simpleName}: $count9")
 
     println()
 
-    val total = count1 + count2 + count3 + count4 + count5 + count6 + count7 + count8 + count9
-    println("Total: $total")
+//    val total = count1 + count2 + count3 + count4 + count5 + count6 + count7 + count8 + count9
+//    println("Total count: $total")
+
+//    val bookTotal = bookCount1
+//    println("bookTotal count: $bookTotal")
 
 //    testPojSianntiauPos()
+
+    println("done")
 }
 
 //fun testPojSianntiauPos() {
