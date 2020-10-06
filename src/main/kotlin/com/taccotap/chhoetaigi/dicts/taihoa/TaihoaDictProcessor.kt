@@ -13,8 +13,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 object TaihoaDictProcessor {
-    private const val SRC_FILENAME = "TaiHoa20170516_fix20201005.xls"
-    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaibunHoabunSoanntengSutian.csv"
+    private const val SRC_FILENAME = "TaiHoa20170516_fix20201006.xlsx"
+    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaihoaSoanntengTuichiautian.csv"
 
     fun run(): Int {
         val dict = loadDict()
@@ -33,12 +33,12 @@ object TaihoaDictProcessor {
         for (recordColumnArrayList in readXlsxDictArrayList) {
             val srcEntry = TaihoaDictSrcEntry()
 
-            srcEntry.id = recordColumnArrayList[0].trim()
+            srcEntry.id = recordColumnArrayList[0]
 
             srcEntry.poj = PojInputFix.fixKuikuOnlyPojWithDelimiter(recordColumnArrayList[1], EnumSet.of(PojInputFixType.ALL))
-            if (srcEntry.poj.isEmpty) {
-                continue
-            }
+//            if (srcEntry.poj.isEmpty) {
+//                continue
+//            }
             if (srcEntry.poj.contains("(\\[|\\(|（)".toRegex())) {
                 println("srcEntry.poj:${srcEntry.poj}")
                 throw IllegalArgumentException()
@@ -62,7 +62,7 @@ object TaihoaDictProcessor {
 
 //            println("srcEntry.poj=${srcEntry.poj}")
 
-            outEntry.id = srcEntry.id.trim()
+            outEntry.id = srcEntry.id
             outEntry.pojInput = srcEntry.poj
             outEntry.pojInputOther = srcEntry.pojOther
             outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj)

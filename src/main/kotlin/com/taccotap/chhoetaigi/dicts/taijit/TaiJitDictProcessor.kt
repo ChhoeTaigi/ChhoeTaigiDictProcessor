@@ -9,7 +9,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object TaiJitDictProcessor {
-    private const val SRC_FILENAME = "TaijitToaSutian20190417_fix20201005.xls"
+    private const val SRC_FILENAME = "TaijitToaSutian20190417_fix20201006.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaijitToaSutian.csv"
 
     fun run(): Int {
@@ -52,9 +52,6 @@ object TaiJitDictProcessor {
 
         for (srcEntry: TaijitDictSrcEntry in dictArray) {
             val outEntry = TaijitDictOutEntry()
-
-            // fix
-            srcEntry.hanloTaibunLekuPoj = fixLekuTrailingNumber(srcEntry.hanloTaibunLekuPoj)
 
             outEntry.id = srcEntry.id
             outEntry.pojInput = srcEntry.poj

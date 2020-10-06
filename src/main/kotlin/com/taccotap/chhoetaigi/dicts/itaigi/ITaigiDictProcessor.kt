@@ -4,12 +4,13 @@ import com.taccotap.chhoetaigi.OutputSettings
 import com.taccotap.chhoetaigi.dicts.itaigi.entry.ITaigiDictOutEntry
 import com.taccotap.chhoetaigi.dicts.itaigi.entry.ITaigiDictSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
+import com.taccotap.chhoetaigi.io.XlsxIO
 import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object ITaigiDictProcessor {
-    private const val SRC_FILENAME = "itaigi20201004.csv"
-    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_iTaigiHoataiSutian.csv"
+    private const val SRC_FILENAME = "itaigi20201004.xlsx"
+    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_iTaigiHoataiTuichiautian.csv"
 
     fun run(): Int {
         val dictArray = loadDict()
@@ -22,10 +23,10 @@ object ITaigiDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
         println("path: " + resource!!.path)
 
-        val readCsvDictArrayList = CsvIO.read(resource.path, true)
+        val readXlsxDictArrayList = XlsxIO.read(resource.path, "itaigi", true)
 
         val dictArray = ArrayList<ITaigiDictSrcEntry>()
-        for (recordColumnArrayList in readCsvDictArrayList) {
+        for (recordColumnArrayList in readXlsxDictArrayList) {
             val srcEntry = ITaigiDictSrcEntry()
 
             srcEntry.hoabun = recordColumnArrayList[0]

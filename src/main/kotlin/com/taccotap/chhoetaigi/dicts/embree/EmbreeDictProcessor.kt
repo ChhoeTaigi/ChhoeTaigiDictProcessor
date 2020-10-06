@@ -10,7 +10,7 @@ import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object EmbreeDictProcessor {
     private const val SRC_FILENAME = "EmbreeTaigiDict20201004.xlsx"
-    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_EmbreeTaigiSutian.csv"
+    private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_EmbreeTaiengSutian.csv"
 
     fun run(): Int {
         val dictArray = loadDict()

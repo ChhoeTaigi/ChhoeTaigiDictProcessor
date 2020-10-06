@@ -14,7 +14,7 @@ import kotlin.collections.ArrayList
 
 object TJPehoeDictProcessor {
     private const val SRC_FILENAME = "TJPehoeSiosutian20201006.xlsx"
-    private const val SAVE_FILENAME_PATH = "/Book_TJPehoeSiosutian.csv"
+    private const val SAVE_FILENAME_PATH = "/Book_TJTaigiPehoeSioSutian.csv"
 
     fun run(): Int {
         val dict = loadDict()

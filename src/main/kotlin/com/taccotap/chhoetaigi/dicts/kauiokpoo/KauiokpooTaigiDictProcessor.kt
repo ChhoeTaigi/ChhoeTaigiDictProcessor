@@ -10,10 +10,10 @@ import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object KauiokpooTaigiDictProcessor {
     private const val SRC_FILE_PATH = "KauiokpooTaigiDict20200807/"
-    private const val SRC_FILENAME_ALL = "AIO_20200807.xls"
+    private const val SRC_FILENAME_ALL = "AIO_20200807.xlsx"
 
     // old files
-    private const val SRC_FILENAME_ANOTHER_WORD = "wordsAnother.xls"
+    private const val SRC_FILENAME_ANOTHER_WORD = "wordsAnother.xlsx"
 
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_KauiokpooTaigiSutian.csv"
 

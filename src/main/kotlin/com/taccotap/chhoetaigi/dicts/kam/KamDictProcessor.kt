@@ -4,12 +4,13 @@ import com.taccotap.chhoetaigi.OutputSettings
 import com.taccotap.chhoetaigi.dicts.kam.entry.KamDictOutEntry
 import com.taccotap.chhoetaigi.dicts.kam.entry.KamDictSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
+import com.taccotap.chhoetaigi.io.XlsxIO
 import com.taccotap.chhoetaigi.utils.StringUtils
 import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object KamDictProcessor {
-    private const val SRC_FILENAME = "KamJitian_SBA_20201004.csv"
+    private const val SRC_FILENAME = "KamJitian_SBA_20201004.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_KamJitian.csv"
 
     fun run(): Int {
@@ -23,12 +24,12 @@ object KamDictProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
         println("path: " + resource!!.path)
 
-        val readCsvDictArrayList = CsvIO.read(resource.path, true)
+        val readXlsxDictArrayList = XlsxIO.read(resource.path, "kam", true)
 
         var cantTypeHanjiCount = 0
         var noHanjiCount = 0
         val dictArray = ArrayList<KamDictSrcEntry>()
-        for (recordColumnArrayList in readCsvDictArrayList) {
+        for (recordColumnArrayList in readXlsxDictArrayList) {
             val srcEntry = KamDictSrcEntry()
 
             srcEntry.id = recordColumnArrayList[0]

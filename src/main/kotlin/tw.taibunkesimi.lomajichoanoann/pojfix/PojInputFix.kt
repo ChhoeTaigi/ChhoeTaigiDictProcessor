@@ -86,7 +86,7 @@ object PojInputFix {
                 }
 
                 if (testString.substring(testString.length - 1) == "N") {
-                    val testLowerString = testString.substring(0, testString.length - 1)
+                    val testLowerString = testString.substring(1, testString.length - 1)
                     if (testLowerString.toLowerCase() == testLowerString) {
                         val index = fixedStr.indexOf("N")
                         fixedStr = fixedStr.substring(0, index) + "nn" + trailingSianntiauString

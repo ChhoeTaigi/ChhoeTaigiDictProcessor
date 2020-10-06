@@ -13,7 +13,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 object MaryknollTaiEngDictProcessor {
-    private const val SRC_FILENAME = "Mkdictionary2013_fix20201005.xls"
+    private const val SRC_FILENAME = "Mkdictionary2013_fix20201005.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_MaryknollTaiengSutian.csv"
 
     fun run(): Int {

@@ -4,11 +4,12 @@ import com.taccotap.chhoetaigi.OutputSettings
 import com.taccotap.chhoetaigi.dicts.taioansitbutmialui.entry.TaioanSitbutMialuiOutEntry
 import com.taccotap.chhoetaigi.dicts.taioansitbutmialui.entry.TaioanSitbutMialuiSrcEntry
 import com.taccotap.chhoetaigi.io.CsvIO
+import com.taccotap.chhoetaigi.io.XlsxIO
 import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object TaioanSitbutMialuiProcessor {
-    private const val SRC_FILENAME = "TaioanSitbutMialui20180731.csv"
+    private const val SRC_FILENAME = "TaioanSitbutMialui20180731.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaioanSitbutMialui.csv"
 
     fun run(): Int {
@@ -22,11 +23,11 @@ object TaioanSitbutMialuiProcessor {
         val resource = Thread.currentThread().contextClassLoader.getResource(SRC_FILENAME)
         println("path: " + resource!!.path)
 
-        val readCsvDictArrayList = CsvIO.read(resource.path, true)
+        val readXlsxDictArrayList = XlsxIO.read(resource.path, "sitbut", true)
 
         val dictArray = ArrayList<TaioanSitbutMialuiSrcEntry>()
         var index = 1
-        for (recordColumnArrayList in readCsvDictArrayList) {
+        for (recordColumnArrayList in readXlsxDictArrayList) {
             val srcEntry = TaioanSitbutMialuiSrcEntry()
 
             //custom id
