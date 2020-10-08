@@ -19,7 +19,7 @@ open class EmbreeDictOutEntry : DictEntry() {
     lateinit var cf: String
 
     lateinit var hoabun: String
-    lateinit var englishDescriptions: String
+    lateinit var english: String
 
     lateinit var pageNumber: String
 }

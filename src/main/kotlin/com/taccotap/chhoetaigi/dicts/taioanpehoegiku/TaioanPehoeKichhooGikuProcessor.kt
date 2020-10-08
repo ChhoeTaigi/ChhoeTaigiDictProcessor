@@ -9,7 +9,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object TaioanPehoeKichhooGikuProcessor {
-    private const val SRC_FILENAME = "TaioanPehoeKichhooGiku20201005.xlsx"
+    private const val SRC_FILENAME = "TaioanPehoeKichhooGiku20201008.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaioanPehoeKichhooGiku.csv"
 
     fun run(): Int {
@@ -34,8 +34,8 @@ object TaioanPehoeKichhooGikuProcessor {
 
             srcEntry.hoabun = recordColumnArrayList[2]
 
-            srcEntry.engbun = recordColumnArrayList[3]
-            srcEntry.engbunChukai = recordColumnArrayList[4]
+            srcEntry.english = recordColumnArrayList[3]
+            srcEntry.englishSoatbeng = recordColumnArrayList[4]
 
             srcEntry.nounClassifiers = recordColumnArrayList[5]
             srcEntry.opposite = recordColumnArrayList[6]
@@ -44,7 +44,7 @@ object TaioanPehoeKichhooGikuProcessor {
 
             srcEntry.exampleKuTaibun = recordColumnArrayList[9]
             srcEntry.exampleKuHoabun = recordColumnArrayList[10]
-            srcEntry.exampleKuEngbun = recordColumnArrayList[11]
+            srcEntry.exampleKuEnglish = recordColumnArrayList[11]
 
             srcEntry.pageNumber = recordColumnArrayList[12]
 
@@ -79,8 +79,8 @@ object TaioanPehoeKichhooGikuProcessor {
 
             outEntry.hoabun = srcEntry.hoabun
 
-            outEntry.engbun = srcEntry.engbun
-            outEntry.engbunChukai = srcEntry.engbunChukai
+            outEntry.english = srcEntry.english
+            outEntry.englishSoatbeng = srcEntry.englishSoatbeng
 
             outEntry.nounClassifiers = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.nounClassifiers)
             outEntry.opposite = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.opposite)
@@ -96,7 +96,7 @@ object TaioanPehoeKichhooGikuProcessor {
                 outEntry.exampleKuTaibunPoj = srcEntry.exampleKuTaibun
             }
             outEntry.exampleKuHoabun = srcEntry.exampleKuHoabun
-            outEntry.exampleKuEngbun = srcEntry.exampleKuEngbun
+            outEntry.exampleKuEnglish = srcEntry.exampleKuEnglish
 
             processedDictArray.add(outEntry)
         }
@@ -124,17 +124,18 @@ object TaioanPehoeKichhooGikuProcessor {
 
             outEntry.hoabun.let { entryArray.add(it) }
 
-            outEntry.engbun.let { entryArray.add(it) }
-            outEntry.engbunChukai.let { entryArray.add(it) }
+            outEntry.english.let { entryArray.add(it) }
+            outEntry.englishSoatbeng.let { entryArray.add(it) }
 
             outEntry.nounClassifiers.let { entryArray.add(it) }
-            outEntry.opposite.let { entryArray.add(it) }
             outEntry.exampleSu.let { entryArray.add(it) }
-            outEntry.fromSu.let { entryArray.add(it) }
+            outEntry.opposite.let { entryArray.add(it) }
 
             outEntry.exampleKuTaibunPoj.let { entryArray.add(it) }
+            outEntry.exampleKuEnglish.let { entryArray.add(it) }
             outEntry.exampleKuHoabun.let { entryArray.add(it) }
-            outEntry.exampleKuEngbun.let { entryArray.add(it) }
+
+            outEntry.fromSu.let { entryArray.add(it) }
 
             outEntry.pageNumber.let { entryArray.add(it) }
 
@@ -157,17 +158,18 @@ object TaioanPehoeKichhooGikuProcessor {
 
                 "hoabun",
 
-                "engbun",
-                "engbun_chukai",
+                "english",
+                "english_soatbeng",
 
                 "noun_classifiers",
-                "opposite",
                 "example_su",
-                "from_su",
+                "opposite",
 
                 "example_ku_taibun_poj",
+                "example_ku_english",
                 "example_ku_hoabun",
-                "example_ku_engbun",
+
+                "from_su",
 
                 "page_number")
 

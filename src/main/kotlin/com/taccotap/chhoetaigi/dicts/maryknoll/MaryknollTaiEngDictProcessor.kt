@@ -46,12 +46,15 @@ object MaryknollTaiEngDictProcessor {
                     .replace("55", "5")
                     .replace("77", "7")
                     .replace("88", "8")
-            fixedPoj = PojInputFix.fixKuikuOnlyPojWithDelimiter(fixedPoj, EnumSet.of(PojInputFixType.ALL))
+            fixedPoj = PojInputFix.fixKuikuOnlyPojWithDelimiter(fixedPoj,
+                    EnumSet.of(PojInputFixType.ONN_SIA_CHO_OONN,
+                    PojInputFixType.PHINNIM_NN_SIA_CHO_TOASIA_N,
+                    PojInputFixType.SIANNTIAU_SOOJI_BO_TI_IMCHAT_BOE))
 
             srcEntry.poj = fixedPoj
 
             srcEntry.hoabun = recordColumnArrayList[2]
-            srcEntry.englishDescriptions = recordColumnArrayList[3]
+            srcEntry.english = recordColumnArrayList[3]
             srcEntry.pageNumber = "" // TODO: Need to add page number in source file
 
             dictArray.add(srcEntry)
@@ -76,7 +79,7 @@ object MaryknollTaiEngDictProcessor {
             outEntry.kipInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj)
             outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
             outEntry.hoabun = srcEntry.hoabun
-            outEntry.englishDescriptions = srcEntry.englishDescriptions
+            outEntry.english = srcEntry.english
             outEntry.pageNumber = srcEntry.pageNumber
 
             processedDictArray.add(outEntry)
@@ -100,7 +103,7 @@ object MaryknollTaiEngDictProcessor {
             outEntry.kipInput.let { entryArray.add(it) }
 
             outEntry.hoabun.let { entryArray.add(it) }
-            outEntry.englishDescriptions.let { entryArray.add(it) }
+            outEntry.english.let { entryArray.add(it) }
 
             outEntry.pageNumber.let { entryArray.add(it) }
 
@@ -118,7 +121,7 @@ object MaryknollTaiEngDictProcessor {
                 "kip_input",
 
                 "hoabun",
-                "english_descriptions",
+                "english",
 
                 "page_number")
 

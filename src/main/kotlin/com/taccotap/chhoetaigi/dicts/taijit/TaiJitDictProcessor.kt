@@ -9,7 +9,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object TaiJitDictProcessor {
-    private const val SRC_FILENAME = "TaijitToaSutian20190417_fix20201006.xlsx"
+    private const val SRC_FILENAME = "TaijitToaSutian20190417_fix20201008.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaijitToaSutian.csv"
 
     fun run(): Int {

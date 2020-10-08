@@ -9,7 +9,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.lomajichoanoann.TaigiLomajiKuikuChoanoann
 
 object EmbreeDictProcessor {
-    private const val SRC_FILENAME = "EmbreeTaigiDict20201004.xlsx"
+    private const val SRC_FILENAME = "EmbreeTaigiDict20201008.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_EmbreeTaiengSutian.csv"
 
     fun run(): Int {
@@ -36,7 +36,7 @@ object EmbreeDictProcessor {
             srcEntry.reduplication = recordColumnArrayList[4]
             srcEntry.synonym = recordColumnArrayList[5]
             srcEntry.cf = recordColumnArrayList[6]
-            srcEntry.englishDescriptions = recordColumnArrayList[7]
+            srcEntry.english = recordColumnArrayList[7]
             srcEntry.pageNumber = "" // TODO: Need to add page number
 
             dictArray.add(srcEntry)
@@ -70,7 +70,7 @@ object EmbreeDictProcessor {
             outEntry.synonym = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.synonym)
             outEntry.cf = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.cf)
 
-            outEntry.englishDescriptions = TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.englishDescriptions)
+            outEntry.english = TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.english)
             outEntry.pageNumber = srcEntry.pageNumber
 
             processedDictArray.add(outEntry)
@@ -97,11 +97,11 @@ object EmbreeDictProcessor {
             outEntry.nounClassifiers.let { entryArray.add(it) }
             outEntry.reduplication.let { entryArray.add(it) }
 
+            outEntry.hoabun.let { entryArray.add(it) }
+            outEntry.english.let { entryArray.add(it) }
+
             outEntry.synonym.let { entryArray.add(it) }
             outEntry.cf.let { entryArray.add(it) }
-
-            outEntry.hoabun.let { entryArray.add(it) }
-            outEntry.englishDescriptions.let { entryArray.add(it) }
 
             outEntry.pageNumber.let { entryArray.add(it) }
 
@@ -122,11 +122,11 @@ object EmbreeDictProcessor {
                 "noun_classifiers",
                 "reduplication",
 
+                "hoabun",
+                "english",
+
                 "synonym",
                 "cf",
-
-                "hoabun",
-                "english_descriptions",
 
                 "page_number")
 

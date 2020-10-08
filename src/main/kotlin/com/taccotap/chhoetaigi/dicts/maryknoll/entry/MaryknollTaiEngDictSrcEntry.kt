@@ -6,6 +6,6 @@ open class MaryknollTaiEngDictSrcEntry : DictEntry() {
     lateinit var id: String
     lateinit var poj: String
     lateinit var hoabun: String
-    lateinit var englishDescriptions: String
+    lateinit var english: String
     lateinit var pageNumber: String
 }

@@ -280,8 +280,8 @@ object KauiokpooTaigiDictProcessor {
                 "kip_input",
                 "kip_input_other",
 
-                "hanji",
-                "hanji_other",
+                "hanji_taibun",
+                "hanji_taibun_other",
 
                 "word_property",
                 "word_bunpeh_property",

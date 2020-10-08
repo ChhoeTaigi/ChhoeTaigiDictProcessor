@@ -10,6 +10,6 @@ open class EmbreeDictSrcEntry : DictEntry() {
     lateinit var reduplication: String
     lateinit var synonym: String
     lateinit var cf: String
-    lateinit var englishDescriptions: String
+    lateinit var english: String
     lateinit var pageNumber: String
 }

@@ -9,8 +9,8 @@ open class TaioanPehoeKichhooGikuSrcEntry : DictEntry() {
 
     lateinit var hoabun: String
 
-    lateinit var engbun: String
-    lateinit var engbunChukai: String
+    lateinit var english: String
+    lateinit var englishSoatbeng: String
 
     lateinit var nounClassifiers: String
     lateinit var opposite: String
@@ -19,7 +19,7 @@ open class TaioanPehoeKichhooGikuSrcEntry : DictEntry() {
 
     lateinit var exampleKuTaibun: String
     lateinit var exampleKuHoabun: String
-    lateinit var exampleKuEngbun: String
+    lateinit var exampleKuEnglish: String
 
     lateinit var pageNumber: String
 }
