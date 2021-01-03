@@ -1,5 +1,6 @@
 package tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh
 
+import tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann
 import tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.koeh.DelimiterKoeh
 import tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.koeh.LomajiKoeh
 
@@ -13,7 +14,7 @@ enum class HybridType {
 object ChhiatKoeh {
     private val IMCHAT_DELIMITERS_REGEX = "( |-|·|\\.|!|\\?|,|\\/|\\\\|:|;|'|\"|”|`|~|#|\\*|\\(|\\)|_|\\+|=|\\[|\\]|\\n|…)".toRegex()
 
-    fun chhiatHybridInputWithRegex(kuikuString: String, hybridType: tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.HybridType): ArrayList<LomajiKoeh> {
+    fun chhiatHybridInputWithRegex(kuikuString: String, hybridType: HybridType): ArrayList<LomajiKoeh> {
         val koehArrayList = ArrayList<LomajiKoeh>()
 
         val matchSequence: Sequence<MatchResult>
@@ -57,7 +58,7 @@ object ChhiatKoeh {
 
 //                println("lomajiString: \"$lomajiString\"")
 
-                if (tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.DEBUG) {
+                if (TaigiLomajiKuikuChoanoann.DEBUG) {
                     if (currentKoeh.string.length >= 2
                             && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())) {
                         println("Lô-má-jī keh-sek būn-tê=${currentKoeh.string}, kuiku=$kuikuString")
@@ -97,7 +98,7 @@ object ChhiatKoeh {
             val currentCodepointString = String(codepoints, i, 1)
 //            println("currentCodepointString=$currentCodepointString")
 
-            val isCurrentCodepointDelimiter = currentCodepointString.matches(tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh.IMCHAT_DELIMITERS_REGEX)
+            val isCurrentCodepointDelimiter = currentCodepointString.matches(IMCHAT_DELIMITERS_REGEX)
             if (i == 0) {
                 isDelimiter = isCurrentCodepointDelimiter
             }
@@ -109,7 +110,7 @@ object ChhiatKoeh {
                 koehArrayList.add(currentKoeh)
 //                println("new koeh=${currentKoeh.string}, isDelimiter=${currentKoeh.isDelimiter}")
 
-                if (tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.DEBUG) {
+                if (TaigiLomajiKuikuChoanoann.DEBUG) {
                     if (!currentKoeh.isDelimiter
                             && currentKoeh.string.length >= 2
                             && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())) {
@@ -127,10 +128,10 @@ object ChhiatKoeh {
             }
 
             if (i == codepointAmount - 1) {
-                val currentKoeh = DelimiterKoeh(stringBuilder.toString(), isDelimiter)
+                val currentKoeh = DelimiterKoeh(stringBuilder.toString(), isCurrentCodepointDelimiter)
                 koehArrayList.add(currentKoeh)
 
-                if (tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.DEBUG) {
+                if (TaigiLomajiKuikuChoanoann.DEBUG) {
                     if (!currentKoeh.isDelimiter
                             && currentKoeh.string.length >= 2
                             && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())) {

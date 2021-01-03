@@ -1,5 +1,6 @@
 package tw.taibunkesimi.lib.lomajichoanoann.unicode
 
+import tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh
 import tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.koeh.LomajiKoeh
 import tw.taibunkesimi.lib.lomajichoanoann.hethong.ImchatInputHethongChoanoann
 import tw.taibunkesimi.lib.lomajichoanoann.unicode.choanoannsoantek.ChoanoannSoantek
@@ -123,7 +124,7 @@ object KuiKuChoan {
             isKuiKuUppercase = true
         }
 
-        val koehArrayList = tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh.chhiatOnlyLomajiWithDelimiter(str)
+        val koehArrayList = ChhiatKoeh.chhiatOnlyLomajiWithDelimiter(str)
         val stringBuilder = StringBuilder()
         for (koeh in koehArrayList) {
             if (!koeh.isDelimiter) {

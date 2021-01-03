@@ -55,7 +55,7 @@ object TaigiLomajiKuikuChoanoann {
         return KuiKuChoan.choanOnlyLomajiInputOrUnicodeWithDelimiter(str, ChoanoannSoantek.KIP_UNICODE_TO_POJ_UNICODE)
     }
 
-    // hybrid
+    // hybrid without other Latin
     fun hybridPojUnicodeToPojInput(str: String): String {
         return KuiKuChoan.choanHybridInputWithRegex(str, ChoanoannSoantek.POJ_UNICODE_TO_POJ_INPUT)
     }
