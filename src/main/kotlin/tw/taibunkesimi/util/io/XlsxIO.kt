@@ -51,14 +51,14 @@ class XlsxIO {
         private fun getColumnsCount(sheet: Sheet): Int {
             var maxColumnCount = 0
 
-                val rowIterator = sheet.iterator()
-                while (rowIterator.hasNext()) {
-                    val currentRow = rowIterator.next()
-                    val currentRowColumnCount = currentRow.lastCellNum + 1
-                    if (currentRowColumnCount > maxColumnCount) {
-                        maxColumnCount = currentRowColumnCount
-                    }
+            val rowIterator = sheet.iterator()
+            while (rowIterator.hasNext()) {
+                val currentRow = rowIterator.next()
+                val currentRowColumnCount = currentRow.lastCellNum + 1
+                if (currentRowColumnCount > maxColumnCount) {
+                    maxColumnCount = currentRowColumnCount
                 }
+            }
 
             return maxColumnCount
         }

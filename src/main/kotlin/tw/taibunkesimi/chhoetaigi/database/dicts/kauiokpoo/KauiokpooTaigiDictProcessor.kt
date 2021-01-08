@@ -86,12 +86,12 @@ object KauiokpooTaigiDictProcessor {
 //                    println("dictSrcEntry.anotherWordBunPehProperty:${srcEntry.otherWordBunPehProperty}")
 
                     srcEntry.kipOther = anotherWordBunPehPropertyAndPhengim
-                            .replace("【", "")
-                            .replace("】", "")
-                            .replace("文", "")
-                            .replace("白", "")
-                            .replace("俗", "")
-                            .replace("替", "")
+                        .replace("【", "")
+                        .replace("】", "")
+                        .replace("文", "")
+                        .replace("白", "")
+                        .replace("俗", "")
+                        .replace("替", "")
                 } else {
                     srcEntry.otherWordBunPehProperty = ""
                     srcEntry.kipOther = anotherWordBunPehPropertyAndPhengim
@@ -101,9 +101,10 @@ object KauiokpooTaigiDictProcessor {
             srcEntry.synonym = recordColumnArrayList[7]
             srcEntry.opposite = recordColumnArrayList[8]
 
-            srcEntry.descriptions = recordColumnArrayList[9] + recordColumnArrayList[10] + recordColumnArrayList[11] + recordColumnArrayList[12] + recordColumnArrayList[13] +
-                    recordColumnArrayList[14] + recordColumnArrayList[15] + recordColumnArrayList[16] + recordColumnArrayList[17] + recordColumnArrayList[18] +
-                    recordColumnArrayList[19] + recordColumnArrayList[20] + recordColumnArrayList[21] + recordColumnArrayList[22] + recordColumnArrayList[23]
+            srcEntry.descriptions =
+                recordColumnArrayList[9] + recordColumnArrayList[10] + recordColumnArrayList[11] + recordColumnArrayList[12] + recordColumnArrayList[13] +
+                        recordColumnArrayList[14] + recordColumnArrayList[15] + recordColumnArrayList[16] + recordColumnArrayList[17] + recordColumnArrayList[18] +
+                        recordColumnArrayList[19] + recordColumnArrayList[20] + recordColumnArrayList[21] + recordColumnArrayList[22] + recordColumnArrayList[23]
 
             if (recordColumnArrayList[28].isEmpty()) {
                 srcEntry.dialects = ""
@@ -191,15 +192,21 @@ object KauiokpooTaigiDictProcessor {
 
             outEntry.id = srcEntry.id
 
-            outEntry.kipInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipUnicodeToKipInput(srcEntry.kip)
+            outEntry.kipInput =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipUnicodeToKipInput(srcEntry.kip)
             outEntry.kipUnicode = srcEntry.kip
-            outEntry.pojInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(outEntry.kipInput)
-            outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+            outEntry.pojInput =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(outEntry.kipInput)
+            outEntry.pojUnicode =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
 
-            outEntry.kipInputOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipUnicodeToKipInput(srcEntry.kipOther)
+            outEntry.kipInputOther =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipUnicodeToKipInput(srcEntry.kipOther)
             outEntry.kipUnicodeOther = srcEntry.kipOther
-            outEntry.pojInputOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(outEntry.kipInputOther)
-            outEntry.pojUnicodeOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInputOther)
+            outEntry.pojInputOther =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(outEntry.kipInputOther)
+            outEntry.pojUnicodeOther =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInputOther)
 
             outEntry.hanji = srcEntry.hanji
             outEntry.hanjiOther = srcEntry.hanjiOther
@@ -210,10 +217,12 @@ object KauiokpooTaigiDictProcessor {
             outEntry.otherWordBunPehProperty = srcEntry.otherWordBunPehProperty
 //            outEntry.wordKithannKonghoatProperty = srcEntry.wordKithannKonghoatProperty
 
-            outEntry.descriptionsPoj = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridKipUnicodeToPojUnicode(srcEntry.descriptions)
+            outEntry.descriptionsPoj =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridKipUnicodeToPojUnicode(srcEntry.descriptions)
             outEntry.descriptionsKip = srcEntry.descriptions
 
-            outEntry.dialectsPoj = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridKipUnicodeToPojUnicode(srcEntry.dialects)
+            outEntry.dialectsPoj =
+                tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridKipUnicodeToPojUnicode(srcEntry.dialects)
             outEntry.dialectsKip = srcEntry.dialects
 
             outEntry.synonym = srcEntry.synonym
@@ -265,38 +274,40 @@ object KauiokpooTaigiDictProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_unicode_other",
-                "poj_input",
-                "poj_input_other",
+            "poj_unicode",
+            "poj_unicode_other",
+            "poj_input",
+            "poj_input_other",
 
-                "kip_unicode",
-                "kip_unicode_other",
-                "kip_input",
-                "kip_input_other",
+            "kip_unicode",
+            "kip_unicode_other",
+            "kip_input",
+            "kip_input_other",
 
-                "hanji_taibun",
-                "hanji_taibun_other",
+            "hanji_taibun",
+            "hanji_taibun_other",
 
-                "word_property",
-                "word_bunpeh_property",
-                "other_word_bunpeh_property",
+            "word_property",
+            "word_bunpeh_property",
+            "other_word_bunpeh_property",
 //                "word_kithannkonghoat_property",
 
-                "hoabun",
+            "hoabun",
 
-                "descriptions_poj",
-                "descriptions_kip",
+            "descriptions_poj",
+            "descriptions_kip",
 
-                "dialects_poj",
-                "dialects_kip",
+            "dialects_poj",
+            "dialects_kip",
 
-                "synonym",
-                "opposite")
+            "synonym",
+            "opposite"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }

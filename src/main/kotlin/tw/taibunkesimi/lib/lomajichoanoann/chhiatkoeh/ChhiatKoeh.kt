@@ -12,13 +12,14 @@ enum class HybridType {
 }
 
 object ChhiatKoeh {
-    private val IMCHAT_DELIMITERS_REGEX = "( |-|·|\\.|!|\\?|,|\\/|\\\\|:|;|'|\"|”|`|~|#|\\*|\\(|\\)|_|\\+|=|\\[|\\]|\\n|…)".toRegex()
+    private val IMCHAT_DELIMITERS_REGEX =
+        "( |-|·|\\.|!|\\?|,|\\/|\\\\|:|;|'|\"|”|`|~|#|\\*|\\(|\\)|_|\\+|=|\\[|\\]|\\n|…)".toRegex()
 
     fun chhiatHybridInputWithRegex(kuikuString: String, hybridType: HybridType): ArrayList<LomajiKoeh> {
         val koehArrayList = ArrayList<LomajiKoeh>()
 
         val matchSequence: Sequence<MatchResult>
-        when(hybridType) {
+        when (hybridType) {
             HybridType.HYBRID_TYPE_POJ_INPUT -> {
                 matchSequence = LomajiSplitter.splitPojWithInput(kuikuString)
             }
@@ -60,11 +61,13 @@ object ChhiatKoeh {
 
                 if (TaigiLomajiKuikuChoanoann.DEBUG) {
                     if (currentKoeh.string.length >= 2
-                            && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())) {
+                        && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())
+                    ) {
                         println("Lô-má-jī keh-sek būn-tê=${currentKoeh.string}, kuiku=$kuikuString")
                     }
                     if (currentKoeh.string.length >= 2
-                            && currentKoeh.string.substring(currentKoeh.string.length - 1) == "N") {
+                        && currentKoeh.string.substring(currentKoeh.string.length - 1) == "N"
+                    ) {
                         println("Lô-má-jī keh-sek būn-tê=${currentKoeh.string}, kuiku=$kuikuString")
                     }
                 }
@@ -112,13 +115,15 @@ object ChhiatKoeh {
 
                 if (TaigiLomajiKuikuChoanoann.DEBUG) {
                     if (!currentKoeh.isDelimiter
-                            && currentKoeh.string.length >= 2
-                            && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())) {
+                        && currentKoeh.string.length >= 2
+                        && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())
+                    ) {
                         println("Lô-má-jī keh-sek būn-tê=${currentKoeh.string}, kuiku=$kuikuInputOrUnicodeString")
                     }
                     if (!currentKoeh.isDelimiter
-                            && currentKoeh.string.length >= 2
-                            && currentKoeh.string.substring(currentKoeh.string.length - 1) == "N") {
+                        && currentKoeh.string.length >= 2
+                        && currentKoeh.string.substring(currentKoeh.string.length - 1) == "N"
+                    ) {
                         println("Lô-má-jī keh-sek būn-tê=${currentKoeh.string}, kuiku=$kuikuInputOrUnicodeString")
                     }
                 }
@@ -133,13 +138,15 @@ object ChhiatKoeh {
 
                 if (TaigiLomajiKuikuChoanoann.DEBUG) {
                     if (!currentKoeh.isDelimiter
-                            && currentKoeh.string.length >= 2
-                            && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())) {
+                        && currentKoeh.string.length >= 2
+                        && currentKoeh.string.substring(0, currentKoeh.string.length - 1).matches(".*\\d.*".toRegex())
+                    ) {
                         println("Lô-má-jī keh-sek būn-tê=${currentKoeh.string}, kuiku=$kuikuInputOrUnicodeString")
                     }
                     if (!currentKoeh.isDelimiter
-                            && currentKoeh.string.length >= 2
-                            && currentKoeh.string.substring(currentKoeh.string.length - 1) == "N") {
+                        && currentKoeh.string.length >= 2
+                        && currentKoeh.string.substring(currentKoeh.string.length - 1) == "N"
+                    ) {
                         println("Lô-má-jī keh-sek būn-tê=${currentKoeh.string}, kuiku=$kuikuInputOrUnicodeString")
                     }
                 }

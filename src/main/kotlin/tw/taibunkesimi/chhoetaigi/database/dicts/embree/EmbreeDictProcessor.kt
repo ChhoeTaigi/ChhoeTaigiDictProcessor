@@ -5,11 +5,12 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.chhoetaigi.database.ChhoeTaigiDatabaseOutputSettings
 import tw.taibunkesimi.chhoetaigi.database.dicts.embree.entry.EmbreeDictOutEntry
 import tw.taibunkesimi.chhoetaigi.database.dicts.embree.entry.EmbreeDictSrcEntry
+import tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann
 import tw.taibunkesimi.util.io.CsvIO
 import tw.taibunkesimi.util.io.XlsxIO
 
 object EmbreeDictProcessor {
-    private const val SRC_FILENAME = "EmbreeTaigiDict20201008.xlsx"
+    private const val SRC_FILENAME = "EmbreeTaigiDict20201102.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_EmbreeTaiengSutian.csv"
 
     fun run(): Int {
@@ -37,7 +38,7 @@ object EmbreeDictProcessor {
             srcEntry.synonym = recordColumnArrayList[5]
             srcEntry.cf = recordColumnArrayList[6]
             srcEntry.english = recordColumnArrayList[7]
-            srcEntry.pageNumber = "" // TODO: Need to add page number
+            srcEntry.pageNumber = recordColumnArrayList[8]
 
             dictArray.add(srcEntry)
         }
@@ -58,17 +59,18 @@ object EmbreeDictProcessor {
             idCount++
 
             outEntry.pojInput = srcEntry.poj.trim()
-            outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj).trim()
-            outEntry.kipInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj).trim()
-            outEntry.kipUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToKipUnicode(srcEntry.poj).trim()
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj).trim()
+            outEntry.kipInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj).trim()
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToKipUnicode(srcEntry.poj).trim()
 
             outEntry.hoabun = srcEntry.hoabun.trim()
             outEntry.abbreviations = srcEntry.abbreviations.trim()
-            outEntry.nounClassifiers = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.nounClassifiers).trim()
-            outEntry.reduplication = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.reduplication).trim()
+            outEntry.nounClassifiers =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.nounClassifiers).trim()
+            outEntry.reduplication = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.reduplication).trim()
 
-            outEntry.synonym = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.synonym).trim()
-            outEntry.cf = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.cf).trim()
+            outEntry.synonym = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.synonym).trim()
+            outEntry.cf = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.cf).trim()
 
             outEntry.english = srcEntry.english.trim()
             outEntry.pageNumber = srcEntry.pageNumber
@@ -108,27 +110,29 @@ object EmbreeDictProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_input",
+            "poj_unicode",
+            "poj_input",
 
-                "kip_unicode",
-                "kip_input",
+            "kip_unicode",
+            "kip_input",
 
-                "abbreviations",
-                "noun_classifiers",
-                "reduplication",
+            "abbreviations",
+            "noun_classifiers",
+            "reduplication",
 
-                "hoabun",
-                "english",
+            "hoabun",
+            "english",
 
-                "synonym",
-                "cf",
+            "synonym",
+            "cf",
 
-                "page_number")
+            "page_number"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }

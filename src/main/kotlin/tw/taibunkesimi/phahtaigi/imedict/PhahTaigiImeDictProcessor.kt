@@ -181,7 +181,11 @@ private fun removeBracketInfo(stringList: MutableList<String>): MutableList<Stri
 private fun addToImeDict(imeDictItem: ImeDictItem) {
     // check duplicate
     for (imeDictItemExist in imeDict) {
-        if (imeDictItem.srcDict == 1 && imeDictItemExist.hanji == imeDictItem.hanji && imeDictItemExist.poj.equals(imeDictItem.poj, ignoreCase = true)) {
+        if (imeDictItem.srcDict == 1 && imeDictItemExist.hanji == imeDictItem.hanji && imeDictItemExist.poj.equals(
+                imeDictItem.poj,
+                ignoreCase = true
+            )
+        ) {
             return
         }
 

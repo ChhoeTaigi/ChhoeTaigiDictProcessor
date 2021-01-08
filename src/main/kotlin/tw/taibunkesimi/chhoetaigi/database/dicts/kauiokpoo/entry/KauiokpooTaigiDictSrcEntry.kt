@@ -17,7 +17,7 @@ open class KauiokpooTaigiDictSrcEntry : DictEntry() {
     lateinit var synonym: String
     lateinit var opposite: String
 
-//    lateinit var wordKithannKonghoatProperty: String
+    //    lateinit var wordKithannKonghoatProperty: String
     lateinit var hoabun: String
     lateinit var descriptions: String
 

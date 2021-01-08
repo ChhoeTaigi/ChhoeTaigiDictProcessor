@@ -19,7 +19,10 @@ class CsvIO {
             try {
                 fileReader = BufferedReader(FileReader(path))
                 if (withFirstRecordAsHeader) {
-                    csvParser = CSVParser(fileReader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim())
+                    csvParser = CSVParser(
+                        fileReader,
+                        CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim()
+                    )
                 } else {
                     csvParser = CSVParser(fileReader, CSVFormat.DEFAULT.withTrim())
                 }
@@ -61,9 +64,9 @@ class CsvIO {
                 val file = File(path.substringBeforeLast("/"))
                 file.mkdirs()
 
-                var osw = OutputStreamWriter(FileOutputStream(path),"UTF-8")
+                var osw = OutputStreamWriter(FileOutputStream(path), "UTF-8")
                 osw.write(String(byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte())))
-                writer = BufferedWriter(osw,1024)
+                writer = BufferedWriter(osw, 1024)
 
                 csvPrinter = CSVPrinter(writer, csvFormat.withQuoteMode(QuoteMode.ALL))
 

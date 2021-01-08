@@ -5,6 +5,7 @@ import tw.taibunkesimi.chhoetaigi.database.entry.DictEntry
 open class KamDictSrcEntry : DictEntry() {
     lateinit var id: String
     lateinit var poj: String
+
     //    lateinit var pojOther: String
     lateinit var hanjiTaibun: String
     lateinit var pojBunim: String

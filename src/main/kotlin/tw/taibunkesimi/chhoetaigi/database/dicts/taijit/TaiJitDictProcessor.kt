@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.chhoetaigi.database.ChhoeTaigiDatabaseOutputSettings
 import tw.taibunkesimi.chhoetaigi.database.dicts.taijit.entry.TaijitDictOutEntry
 import tw.taibunkesimi.chhoetaigi.database.dicts.taijit.entry.TaijitDictSrcEntry
+import tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann
 import tw.taibunkesimi.util.io.CsvIO
 import tw.taibunkesimi.util.io.XlsxIO
 
@@ -52,23 +53,35 @@ object TaiJitDictProcessor {
         for (srcEntry: TaijitDictSrcEntry in dictArray) {
             val outEntry = TaijitDictOutEntry()
 
-            outEntry.id = srcEntry.id
-            outEntry.pojInput = srcEntry.poj
-            outEntry.pojInputOther = srcEntry.pojOther
-            outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj)
-            outEntry.pojUnicodeOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.pojOther)
+            outEntry.id = srcEntry.id.trim()
+            outEntry.pojInput = srcEntry.poj.trim()
+            outEntry.pojInputOther = srcEntry.pojOther.trim()
+            outEntry.pojUnicode =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+            outEntry.pojUnicodeOther =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInputOther)
 
-            outEntry.kipInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj)
-            outEntry.kipInputOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.pojOther)
-            outEntry.kipUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
-            outEntry.kipUnicodeOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInputOther)
+            outEntry.kipInput =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(outEntry.pojInput)
+            outEntry.kipInputOther =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(outEntry.pojInputOther)
+            outEntry.kipUnicode =
+                TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
+            outEntry.kipUnicodeOther =
+                TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInputOther)
 
-            outEntry.hanloTaibunPoj = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.hanloTaibunPoj)
-            outEntry.hanloTaibunKip = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridPojInputToKipUnicode(srcEntry.hanloTaibunPoj)
-            outEntry.hanloTaibunKaisoehPoj = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.hanloTaibunKaisoehPoj)
-            outEntry.hanloTaibunKaisoehKip = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridPojInputToKipUnicode(srcEntry.hanloTaibunKaisoehPoj)
-            outEntry.hanloTaibunLekuPoj = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.hanloTaibunLekuPoj)
-            outEntry.hanloTaibunLekuKip = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridPojInputToKipUnicode(srcEntry.hanloTaibunLekuPoj)
+            outEntry.hanloTaibunPoj =
+                TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.hanloTaibunPoj.trim())
+            outEntry.hanloTaibunKip =
+                TaigiLomajiKuikuChoanoann.hybridPojInputToKipUnicode(srcEntry.hanloTaibunPoj.trim())
+            outEntry.hanloTaibunKaisoehPoj =
+                TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.hanloTaibunKaisoehPoj.trim())
+            outEntry.hanloTaibunKaisoehKip =
+                TaigiLomajiKuikuChoanoann.hybridPojInputToKipUnicode(srcEntry.hanloTaibunKaisoehPoj.trim())
+            outEntry.hanloTaibunLekuPoj =
+                TaigiLomajiKuikuChoanoann.hybridPojInputToPojUnicode(srcEntry.hanloTaibunLekuPoj.trim())
+            outEntry.hanloTaibunLekuKip =
+                TaigiLomajiKuikuChoanoann.hybridPojInputToKipUnicode(srcEntry.hanloTaibunLekuPoj.trim())
 
             outEntry.pageNumber = srcEntry.pageNumber
 
@@ -119,29 +132,31 @@ object TaiJitDictProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_unicode_other",
-                "poj_input",
-                "poj_input_other",
+            "poj_unicode",
+            "poj_unicode_other",
+            "poj_input",
+            "poj_input_other",
 
-                "hanlo_taibun_poj",
-                "hanlo_taibun_kaisoeh_poj",
-                "hanlo_taibun_leku_poj",
+            "hanlo_taibun_poj",
+            "hanlo_taibun_kaisoeh_poj",
+            "hanlo_taibun_leku_poj",
 
-                "kip_unicode",
-                "kip_unicode_other",
-                "kip_input",
-                "kip_input_other",
+            "kip_unicode",
+            "kip_unicode_other",
+            "kip_input",
+            "kip_input_other",
 
-                "hanlo_taibun_kip",
-                "hanlo_taibun_kaisoeh_kip",
-                "hanlo_taibun_leku_kip",
+            "hanlo_taibun_kip",
+            "hanlo_taibun_kaisoeh_kip",
+            "hanlo_taibun_leku_kip",
 
-                "page_number")
+            "page_number"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }

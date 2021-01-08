@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.chhoetaigi.database.ChhoeTaigiDatabaseOutputSettings
 import tw.taibunkesimi.chhoetaigi.database.dicts.maryknoll.entry.MaryknollTaiEngDictOutEntry
 import tw.taibunkesimi.chhoetaigi.database.dicts.maryknoll.entry.MaryknollTaiEngDictSrcEntry
+import tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann
 import tw.taibunkesimi.lib.lomajichoanoann.pojfix.PojInputFix
 import tw.taibunkesimi.lib.lomajichoanoann.pojfix.PojInputFixType
 import tw.taibunkesimi.util.io.CsvIO
@@ -35,20 +36,24 @@ object MaryknollTaiEngDictProcessor {
             srcEntry.id = recordColumnArrayList[0]
 
             var fixedPoj = recordColumnArrayList[1]
-                    .replace("::", "")  // remove "::" symbol for subcatogory
-                    .replace("*", "nn")  // fix POJ
-                    .replace("+", "o")  // fix POJ
-                    .replace("11", "1")
-                    .replace("22", "2")
-                    .replace("33", "3")
-                    .replace("44", "4")
-                    .replace("55", "5")
-                    .replace("77", "7")
-                    .replace("88", "8")
-            fixedPoj = PojInputFix.fixKuikuOnlyPojWithDelimiter(fixedPoj,
-                    EnumSet.of(PojInputFixType.ONN_SIA_CHO_OONN,
+                .replace("::", "")  // remove "::" symbol for subcatogory
+                .replace("*", "nn")  // fix POJ
+                .replace("+", "o")  // fix POJ
+                .replace("11", "1")
+                .replace("22", "2")
+                .replace("33", "3")
+                .replace("44", "4")
+                .replace("55", "5")
+                .replace("77", "7")
+                .replace("88", "8")
+            fixedPoj = PojInputFix.fixKuikuOnlyPojWithDelimiter(
+                fixedPoj,
+                EnumSet.of(
+                    PojInputFixType.ONN_SIA_CHO_OONN,
                     PojInputFixType.PHINNIM_NN_SIA_CHO_TOASIA_N,
-                    PojInputFixType.SIANNTIAU_SOOJI_BO_TI_IMCHAT_BOE))
+                    PojInputFixType.SIANNTIAU_SOOJI_BO_TI_IMCHAT_BOE
+                )
+            )
 
             srcEntry.poj = fixedPoj
 
@@ -74,9 +79,13 @@ object MaryknollTaiEngDictProcessor {
             idCount++
 
             outEntry.pojInput = srcEntry.poj.trim()
-            outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.poj).trim()
-            outEntry.kipInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.poj).trim()
-            outEntry.kipUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput).trim()
+            outEntry.pojUnicode =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+            outEntry.kipInput =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(outEntry.pojInput)
+            outEntry.kipUnicode =
+                TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
+
             outEntry.hoabun = srcEntry.hoabun.trim()
             outEntry.english = srcEntry.english.trim()
             outEntry.pageNumber = srcEntry.pageNumber.trim()
@@ -109,20 +118,22 @@ object MaryknollTaiEngDictProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_input",
+            "poj_unicode",
+            "poj_input",
 
-                "kip_unicode",
-                "kip_input",
+            "kip_unicode",
+            "kip_input",
 
-                "hoabun",
-                "english",
+            "hoabun",
+            "english",
 
-                "page_number")
+            "page_number"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }

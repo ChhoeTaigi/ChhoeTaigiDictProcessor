@@ -12,7 +12,8 @@ object ImchatUnicodeToInputChoanoann {
                 if (pojSoojiSianntiau != null) {
                     val pojBoSianntiau = pojSoojiSianntiau.substring(0, pojSoojiSianntiau.length - 1)
                     val sianntiauSooji = pojSoojiSianntiau.substring(pojSoojiSianntiau.length - 1)
-                    val pojSianntiauSoojiString = pojUnicodeString.replace(possiblePojUnicode, pojBoSianntiau) + sianntiauSooji
+                    val pojSianntiauSoojiString =
+                        pojUnicodeString.replace(possiblePojUnicode, pojBoSianntiau) + sianntiauSooji
                     return pojUnicodeToInputFixJibo(pojSianntiauSoojiString, isKuiKuUppercase)
                 }
             }
@@ -26,17 +27,17 @@ object ImchatUnicodeToInputChoanoann {
 
         if (isKuiKuUppercase) {
             fixedString = fixedString.replace("O͘", "OO")
-                    .replace("Ṳ", "UR")
-                    .replace("O̤̤", "OR")
+                .replace("Ṳ", "UR")
+                .replace("O̤̤", "OR")
         } else {
             fixedString = fixedString.replace("O͘", "Oo")
-                    .replace("Ṳ", "Ur")
-                    .replace("O̤", "Or")
+                .replace("Ṳ", "Ur")
+                .replace("O̤", "Or")
         }
 
         return fixedString.replace("o͘", "oo")
-                .replace("ṳ", "ur")
-                .replace("o̤", "or")
+            .replace("ṳ", "ur")
+            .replace("o̤", "or")
     }
 
     fun kipUnicodeToInput(kipUnicodeString: String): String {
@@ -47,7 +48,7 @@ object ImchatUnicodeToInputChoanoann {
                     val kipBoSianntiau = kipSoojiSianntiau.substring(0, kipSoojiSianntiau.length - 1)
                     val sianntiauSooji = kipSoojiSianntiau.substring(kipSoojiSianntiau.length - 1)
                     return kipUnicodeString
-                            .replace(possibleKipUnicode, kipBoSianntiau) +
+                        .replace(possibleKipUnicode, kipBoSianntiau) +
                             sianntiauSooji
                 }
             }

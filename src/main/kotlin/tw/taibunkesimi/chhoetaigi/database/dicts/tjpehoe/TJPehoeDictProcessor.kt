@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.chhoetaigi.database.ChhoeTaigiDatabaseOutputSettings
 import tw.taibunkesimi.chhoetaigi.database.dicts.tjpehoe.entry.TJPehoeDictOutEntry
 import tw.taibunkesimi.chhoetaigi.database.dicts.tjpehoe.entry.TJPehoeDictSrcEntry
+import tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann
 import tw.taibunkesimi.lib.lomajichoanoann.pojfix.PojInputFix
 import tw.taibunkesimi.lib.lomajichoanoann.pojfix.PojInputFixType
 import tw.taibunkesimi.util.io.CsvIO
@@ -12,7 +13,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 object TJPehoeDictProcessor {
-    private const val SRC_FILENAME = "TJPehoeSiosutian20201006.xlsx"
+    private const val SRC_FILENAME = "TJPehoeSiosutian20201212.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigiBookIndex_TJTaigiPehoeSioSutian.csv"
 
     fun run(): Int {
@@ -29,17 +30,19 @@ object TJPehoeDictProcessor {
         val readXlsxDictArrayList = XlsxIO.read(resource.path, "tj", true)
 
         val dictArray = ArrayList<TJPehoeDictSrcEntry>()
-        var idNum = 1
+
         for (recordColumnArrayList in readXlsxDictArrayList) {
             val dictEntry = TJPehoeDictSrcEntry()
 
-            dictEntry.id = idNum.toString()
+            dictEntry.pojInput = PojInputFix.fixKuikuOnlyPojWithDelimiter(
+                recordColumnArrayList[1],
+                EnumSet.of(PojInputFixType.IR_KAI_CHO_UR, PojInputFixType.ER_KAI_CHO_OR)
+            )
 
-            dictEntry.pojInput = PojInputFix.fixKuikuOnlyPojWithDelimiter(recordColumnArrayList[1],
-                    EnumSet.of(PojInputFixType.IR_KAI_CHO_UR, PojInputFixType.ER_KAI_CHO_OR))
-
-            dictEntry.pojInputOther = PojInputFix.fixKuikuOnlyPojWithDelimiter(recordColumnArrayList[2],
-                    EnumSet.of(PojInputFixType.IR_KAI_CHO_UR, PojInputFixType.ER_KAI_CHO_OR))
+            dictEntry.pojInputOther = PojInputFix.fixKuikuOnlyPojWithDelimiter(
+                recordColumnArrayList[2],
+                EnumSet.of(PojInputFixType.IR_KAI_CHO_UR, PojInputFixType.ER_KAI_CHO_OR)
+            )
 
             dictEntry.pageNumber = recordColumnArrayList[3]
 
@@ -48,8 +51,6 @@ object TJPehoeDictProcessor {
 //            if (dictEntry.pojDialect.contains("r")) {
 //                println("srcEntry.pojDialect = ${dictEntry.pojDialect}")
 //            }
-
-            idNum++
         }
 
         return dictArray
@@ -58,21 +59,34 @@ object TJPehoeDictProcessor {
     private fun processDict(dictArray: ArrayList<TJPehoeDictSrcEntry>): List<TJPehoeDictOutEntry> {
         val formattedDictArray = ArrayList<TJPehoeDictOutEntry>()
 
+        var index = 1
+
         for (srcEntry: TJPehoeDictSrcEntry in dictArray) {
             val outEntry = TJPehoeDictOutEntry()
 
-            outEntry.id = srcEntry.id
-            outEntry.pojInput = srcEntry.pojInput
-            outEntry.pojInputOther = srcEntry.pojInputOther
-            outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.pojInput)
-            outEntry.pojUnicodeOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.pojInputOther)
+            outEntry.id = index.toString()
+            index++
 
-            outEntry.kipInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.pojInput)
-            outEntry.kipInputOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(srcEntry.pojInputOther)
-            outEntry.kipUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
-            outEntry.kipUnicodeOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInputOther)
+            val fixedPojInput = PojInputFix.fixKuikuOnlyPojWithDelimiter(
+                srcEntry.pojInput.trim(),
+                EnumSet.of(PojInputFixType.ONN_SIA_CHO_OONN)
+            )
+            val fixedPojInputOther = PojInputFix.fixKuikuOnlyPojWithDelimiter(
+                srcEntry.pojInputOther.trim(),
+                EnumSet.of(PojInputFixType.ONN_SIA_CHO_OONN)
+            )
 
-            outEntry.pageNumber = srcEntry.pageNumber
+            outEntry.pojInput = fixedPojInput
+            outEntry.pojInputOther = fixedPojInputOther
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.pojInput)
+            outEntry.pojUnicodeOther = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(srcEntry.pojInputOther)
+
+            outEntry.kipInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(outEntry.pojInput)
+            outEntry.kipInputOther = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(outEntry.pojInputOther)
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInput)
+            outEntry.kipUnicodeOther = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(outEntry.kipInputOther)
+
+            outEntry.pageNumber = srcEntry.pageNumber.trim()
             outEntry.storeLink = ""
 
             formattedDictArray.add(outEntry)
@@ -105,22 +119,24 @@ object TJPehoeDictProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_unicode_other",
-                "poj_input",
-                "poj_input_other",
+            "poj_unicode",
+            "poj_unicode_other",
+            "poj_input",
+            "poj_input_other",
 
-                "kip_unicode",
-                "kip_unicode_other",
-                "kip_input",
-                "kip_input_other",
+            "kip_unicode",
+            "kip_unicode_other",
+            "kip_input",
+            "kip_input_other",
 
-                "page_number",
-                "store_link")
+            "page_number",
+            "store_link"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }

@@ -31,7 +31,10 @@ object ImchatInputToUnicodeChoanoann {
         } else {
             val str1 = pojInputBoSianntiauSooji.substring(0, pojInputSianntiauPosition.pos)
 
-            val str2PojBosianntiau = pojInputBoSianntiauSooji.substring(pojInputSianntiauPosition.pos, pojInputSianntiauPosition.pos + pojInputSianntiauPosition.length)
+            val str2PojBosianntiau = pojInputBoSianntiauSooji.substring(
+                pojInputSianntiauPosition.pos,
+                pojInputSianntiauPosition.pos + pojInputSianntiauPosition.length
+            )
             val str2PojNumber = str2PojBosianntiau + sianntiauSoojiString
             val str2 = PojSiannho.sSoojiSianntiauToUnicodeHashMap[str2PojNumber]
             if (str2.isNullOrEmpty()) {
@@ -39,7 +42,10 @@ object ImchatInputToUnicodeChoanoann {
                 throw PojUnicodeNotFoundException("PojSiannho.sSoojiSianntiauToUnicodeHashMap[$str2PojNumber] not found!")
             }
 
-            val str3 = pojInputBoSianntiauSooji.substring(pojInputSianntiauPosition.pos + pojInputSianntiauPosition.length, pojInputBoSianntiauSooji.length)
+            val str3 = pojInputBoSianntiauSooji.substring(
+                pojInputSianntiauPosition.pos + pojInputSianntiauPosition.length,
+                pojInputBoSianntiauSooji.length
+            )
 
 //            println("$pojBoSianntiau$soojiSianntiauString -> $str1$str2$str3")
 
@@ -60,15 +66,15 @@ object ImchatInputToUnicodeChoanoann {
 
         if (fixedString.isUpper()) {
             fixedString = fixedString.replace("OO", "O͘")
-                    .replace("UR", "Ṳ")
-                    .replace("OR", "O̤̤")
+                .replace("UR", "Ṳ")
+                .replace("OR", "O̤̤")
         } else {
             fixedString = fixedString.replace("Oo", "O͘")
-                    .replace("oo", "o͘")
-                    .replace("Ur", "Ṳ")
-                    .replace("ur", "ṳ")
-                    .replace("Or", "O̤")
-                    .replace("or", "o̤")
+                .replace("oo", "o͘")
+                .replace("Ur", "Ṳ")
+                .replace("ur", "ṳ")
+                .replace("Or", "O̤")
+                .replace("or", "o̤")
         }
 
         return fixedString
@@ -119,11 +125,13 @@ object ImchatInputToUnicodeChoanoann {
                     // Handle special cases:
                     if (str.toLowerCase().contains("iuh")) {
                         // "iuh" found
-                        val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 2)
+                        val findJiboPositionFromLastCharExludingPhinnim =
+                            findJiboPositionFromLastCharExludingPhinnim(str, 2)
                         return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                     } else {
                         if (last2ndJiboString.toLowerCase().matches("[iu]".toRegex())) {
-                            val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 3)
+                            val findJiboPositionFromLastCharExludingPhinnim =
+                                findJiboPositionFromLastCharExludingPhinnim(str, 3)
                             return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                         } else {
                             return PojSianntiauPosition(last2ndJiboPosition, 1)
@@ -133,12 +141,14 @@ object ImchatInputToUnicodeChoanoann {
                     // Handle special cases:
                     if (last2ndJiboString.toLowerCase() == "i") {
                         // Tone marks at the last jibo. (excluding phinnim)
-                        val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 1)
+                        val findJiboPositionFromLastCharExludingPhinnim =
+                            findJiboPositionFromLastCharExludingPhinnim(str, 1)
                         return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                     }
 
                     // Tone marks at the last 2nd jibo. (excluding phinnim)
-                    val findJiboPositionFromLastCharExludingPhinnim = findJiboPositionFromLastCharExludingPhinnim(str, 2)
+                    val findJiboPositionFromLastCharExludingPhinnim =
+                        findJiboPositionFromLastCharExludingPhinnim(str, 2)
                     return PojSianntiauPosition(findJiboPositionFromLastCharExludingPhinnim, 1)
                 }
             }
@@ -147,7 +157,8 @@ object ImchatInputToUnicodeChoanoann {
 
     private fun isPojJipsiann(pojBoSianntiau: String): Boolean {
         val lastCharExcludingPhinnim = pojBoSianntiau.replace("ⁿ", "")
-        return lastCharExcludingPhinnim.substring(lastCharExcludingPhinnim.length - 1).toLowerCase().matches("[ptkh]".toRegex())
+        return lastCharExcludingPhinnim.substring(lastCharExcludingPhinnim.length - 1).toLowerCase()
+            .matches("[ptkh]".toRegex())
     }
 
     private fun findJiboPositionFromLastCharExludingPhinnim(pojBoSianntiau: String, findWhichCharFromRight: Int): Int {
@@ -202,7 +213,8 @@ object ImchatInputToUnicodeChoanoann {
             return 1
         }
 
-        val isLeftCharAlsoVowel = pojBoSianntiau.substring(lastIndexOfAnyVowel - 1, lastIndexOfAnyVowel).contains("[aiueo]".toRegex())
+        val isLeftCharAlsoVowel =
+            pojBoSianntiau.substring(lastIndexOfAnyVowel - 1, lastIndexOfAnyVowel).contains("[aiueo]".toRegex())
         if (!isLeftCharAlsoVowel) {
             return 1
         }
@@ -230,33 +242,65 @@ object ImchatInputToUnicodeChoanoann {
 
         val lastIndexOfA = lowerInput.lastIndexOf("a")
         if (lastIndexOfA >= 0) {
-            return kipInputToUnicodeMapper(kipInputBoSianntiauSooji, sianntiauSoojiString, kipInputBoSianntiauSooji.substring(lastIndexOfA, lastIndexOfA + 1))
+            return kipInputToUnicodeMapper(
+                kipInputBoSianntiauSooji,
+                sianntiauSoojiString,
+                kipInputBoSianntiauSooji.substring(lastIndexOfA, lastIndexOfA + 1)
+            )
         }
 
         val lastIndexOfOtherBoim = lowerInput.lastIndexOfAny(arrayListOf("i", "u", "o", "e"))
         if (lastIndexOfOtherBoim >= 0) {
             // check oo
-            if (lastIndexOfOtherBoim > 0 && lowerInput.substring(lastIndexOfOtherBoim - 1, lastIndexOfOtherBoim + 1) == "oo") {
-                return kipInputToUnicodeMapper(kipInputBoSianntiauSooji, sianntiauSoojiString, kipInputBoSianntiauSooji.substring(lastIndexOfOtherBoim - 1, lastIndexOfOtherBoim + 1))
+            if (lastIndexOfOtherBoim > 0 && lowerInput.substring(
+                    lastIndexOfOtherBoim - 1,
+                    lastIndexOfOtherBoim + 1
+                ) == "oo"
+            ) {
+                return kipInputToUnicodeMapper(
+                    kipInputBoSianntiauSooji,
+                    sianntiauSoojiString,
+                    kipInputBoSianntiauSooji.substring(lastIndexOfOtherBoim - 1, lastIndexOfOtherBoim + 1)
+                )
             } else {
-                return kipInputToUnicodeMapper(kipInputBoSianntiauSooji, sianntiauSoojiString, kipInputBoSianntiauSooji.substring(lastIndexOfOtherBoim, lastIndexOfOtherBoim + 1))
+                return kipInputToUnicodeMapper(
+                    kipInputBoSianntiauSooji,
+                    sianntiauSoojiString,
+                    kipInputBoSianntiauSooji.substring(lastIndexOfOtherBoim, lastIndexOfOtherBoim + 1)
+                )
             }
         }
 
         val lastIndexOfPhinnchuim = lowerInput.lastIndexOfAny(arrayListOf("ng", "m", "n"))
         if (lastIndexOfPhinnchuim >= 0) {
             // check ng
-            if (lastIndexOfPhinnchuim + 1 < lowerInput.length && lowerInput.substring(lastIndexOfPhinnchuim, lastIndexOfPhinnchuim + 2) == "ng") {
-                return kipInputToUnicodeMapper(kipInputBoSianntiauSooji, sianntiauSoojiString, kipInputBoSianntiauSooji.substring(lastIndexOfPhinnchuim, lastIndexOfPhinnchuim + 2))
+            if (lastIndexOfPhinnchuim + 1 < lowerInput.length && lowerInput.substring(
+                    lastIndexOfPhinnchuim,
+                    lastIndexOfPhinnchuim + 2
+                ) == "ng"
+            ) {
+                return kipInputToUnicodeMapper(
+                    kipInputBoSianntiauSooji,
+                    sianntiauSoojiString,
+                    kipInputBoSianntiauSooji.substring(lastIndexOfPhinnchuim, lastIndexOfPhinnchuim + 2)
+                )
             } else {
-                return kipInputToUnicodeMapper(kipInputBoSianntiauSooji, sianntiauSoojiString, kipInputBoSianntiauSooji.substring(lastIndexOfPhinnchuim, lastIndexOfPhinnchuim + 1))
+                return kipInputToUnicodeMapper(
+                    kipInputBoSianntiauSooji,
+                    sianntiauSoojiString,
+                    kipInputBoSianntiauSooji.substring(lastIndexOfPhinnchuim, lastIndexOfPhinnchuim + 1)
+                )
             }
         }
 
         return kipInputBoSianntiauSooji
     }
 
-    private fun kipInputToUnicodeMapper(kipInputBoSianntiauSooji: String, sianntiauSoojiString: String, replaceCharString: String): String {
+    private fun kipInputToUnicodeMapper(
+        kipInputBoSianntiauSooji: String,
+        sianntiauSoojiString: String,
+        replaceCharString: String
+    ): String {
         val kipJiboAndSianntiauSooji = replaceCharString + sianntiauSoojiString
         val kipJiboUnicode = KipSiannho.sSoojiSianntiauToUnicodeHashMap[kipJiboAndSianntiauSooji]
         return if (kipJiboUnicode != null) {

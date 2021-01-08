@@ -1,6 +1,7 @@
 package tw.taibunkesimi.lib.lomajichoanoann.unicode
 
 import tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh
+import tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.HybridType
 import tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.koeh.LomajiKoeh
 import tw.taibunkesimi.lib.lomajichoanoann.hethong.ImchatInputHethongChoanoann
 import tw.taibunkesimi.lib.lomajichoanoann.unicode.choanoannsoantek.ChoanoannSoantek
@@ -19,25 +20,37 @@ object KuiKuChoan {
             ChoanoannSoantek.POJ_INPUT_TO_POJ_UNICODE,
             ChoanoannSoantek.POJ_INPUT_TO_KIP_UNICODE,
             ChoanoannSoantek.POJ_INPUT_TO_KIP_INPUT -> {
-                koehArrayList = tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh.chhiatHybridInputWithRegex(str, tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.HybridType.HYBRID_TYPE_POJ_INPUT)
+                koehArrayList = ChhiatKoeh.chhiatHybridInputWithRegex(
+                    str,
+                    HybridType.HYBRID_TYPE_POJ_INPUT
+                )
             }
 
             ChoanoannSoantek.POJ_UNICODE_TO_POJ_INPUT,
             ChoanoannSoantek.POJ_UNICODE_TO_KIP_INPUT,
             ChoanoannSoantek.POJ_UNICODE_TO_KIP_UNICODE -> {
-                koehArrayList = tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh.chhiatHybridInputWithRegex(str, tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.HybridType.HYBRID_TYPE_POJ_UNICODE)
+                koehArrayList = ChhiatKoeh.chhiatHybridInputWithRegex(
+                    str,
+                    HybridType.HYBRID_TYPE_POJ_UNICODE
+                )
             }
 
             ChoanoannSoantek.KIP_INPUT_TO_KIP_UNICODE,
             ChoanoannSoantek.KIP_INPUT_TO_POJ_UNICODE,
             ChoanoannSoantek.KIP_INPUT_TO_POJ_INPUT -> {
-                koehArrayList = tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh.chhiatHybridInputWithRegex(str, tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.HybridType.HYBRID_TYPE_KIP_INPUT)
+                koehArrayList = ChhiatKoeh.chhiatHybridInputWithRegex(
+                    str,
+                    HybridType.HYBRID_TYPE_KIP_INPUT
+                )
             }
 
             ChoanoannSoantek.KIP_UNICODE_TO_KIP_INPUT,
             ChoanoannSoantek.KIP_UNICODE_TO_POJ_INPUT,
             ChoanoannSoantek.KIP_UNICODE_TO_POJ_UNICODE -> {
-                koehArrayList = tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.ChhiatKoeh.chhiatHybridInputWithRegex(str, tw.taibunkesimi.lib.lomajichoanoann.chhiatkoeh.HybridType.HYBRID_TYPE_KIP_UNICODE)
+                koehArrayList = ChhiatKoeh.chhiatHybridInputWithRegex(
+                    str,
+                    HybridType.HYBRID_TYPE_KIP_UNICODE
+                )
             }
         }
 

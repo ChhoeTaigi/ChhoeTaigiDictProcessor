@@ -25,7 +25,8 @@ object PojInputFix {
         var fixedStr = str
 
         if (inputFixTypes.contains(PojInputFixType.ALL) ||
-                inputFixTypes.contains(PojInputFixType.SIANNTIAU_SOOJI_BO_TI_IMCHAT_BOE)) {
+            inputFixTypes.contains(PojInputFixType.SIANNTIAU_SOOJI_BO_TI_IMCHAT_BOE)
+        ) {
             if (fixedStr.length >= 3) {
                 val strWithoutLastChar = fixedStr.substring(0, fixedStr.length - 1)
                 if (strWithoutLastChar.contains(".*\\d.*".toRegex())) {
@@ -46,35 +47,40 @@ object PojInputFix {
         }
 
         if (inputFixTypes.contains(PojInputFixType.ALL) ||
-                inputFixTypes.contains(PojInputFixType.OO_SIA_CHO_OU)) {
+            inputFixTypes.contains(PojInputFixType.OO_SIA_CHO_OU)
+        ) {
             fixedStr = fixedStr.replace("ou", "oo")
-                    .replace("Ou", "Oo")
-                    .replace("OU", "OO")
+                .replace("Ou", "Oo")
+                .replace("OU", "OO")
         }
 
         if (inputFixTypes.contains(PojInputFixType.ALL) ||
-                inputFixTypes.contains(PojInputFixType.CH_SIA_CHO_TS)) {
+            inputFixTypes.contains(PojInputFixType.CH_SIA_CHO_TS)
+        ) {
             fixedStr = fixedStr.replace("ts", "ch")
-                    .replace("Ts", "Ch")
-                    .replace("TS", "CH")
+                .replace("Ts", "Ch")
+                .replace("TS", "CH")
         }
 
         if (inputFixTypes.contains(PojInputFixType.ALL) ||
-                inputFixTypes.contains(PojInputFixType.IR_KAI_CHO_UR)) {
+            inputFixTypes.contains(PojInputFixType.IR_KAI_CHO_UR)
+        ) {
             fixedStr = fixedStr.replace("ir", "ur")
-                    .replace("Ir", "Ur")
-                    .replace("IR", "UR")
+                .replace("Ir", "Ur")
+                .replace("IR", "UR")
         }
 
         if (inputFixTypes.contains(PojInputFixType.ALL) ||
-                inputFixTypes.contains(PojInputFixType.ER_KAI_CHO_OR)) {
+            inputFixTypes.contains(PojInputFixType.ER_KAI_CHO_OR)
+        ) {
             fixedStr = fixedStr.replace("er", "or")
-                    .replace("Er", "Or")
-                    .replace("ER", "OR")
+                .replace("Er", "Or")
+                .replace("ER", "OR")
         }
 
         if (inputFixTypes.contains(PojInputFixType.ALL) ||
-                inputFixTypes.contains(PojInputFixType.PHINNIM_NN_SIA_CHO_TOASIA_N)) {
+            inputFixTypes.contains(PojInputFixType.PHINNIM_NN_SIA_CHO_TOASIA_N)
+        ) {
             if (fixedStr.length >= 2) {
                 var testString = fixedStr
                 var trailingSianntiauString = ""
@@ -96,10 +102,11 @@ object PojInputFix {
         }
 
         if (inputFixTypes.contains(PojInputFixType.ALL) ||
-                inputFixTypes.contains(PojInputFixType.ONN_SIA_CHO_OONN)) {
+            inputFixTypes.contains(PojInputFixType.ONN_SIA_CHO_OONN)
+        ) {
             fixedStr = fixedStr.replace("oonn", "onn")
-                    .replace("Oonn", "Onn")
-                    .replace("OONN", "ONN")
+                .replace("Oonn", "Onn")
+                .replace("OONN", "ONN")
         }
 
         return fixedStr

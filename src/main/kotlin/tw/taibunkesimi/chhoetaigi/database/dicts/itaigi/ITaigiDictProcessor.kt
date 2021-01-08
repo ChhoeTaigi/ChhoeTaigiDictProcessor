@@ -8,7 +8,7 @@ import tw.taibunkesimi.util.io.CsvIO
 import tw.taibunkesimi.util.io.XlsxIO
 
 object ITaigiDictProcessor {
-    private const val SRC_FILENAME = "itaigi20201004.xlsx"
+    private const val SRC_FILENAME = "itaigi20210108.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_iTaigiHoataiTuichiautian.csv"
 
     fun run(): Int {
@@ -58,14 +58,18 @@ object ITaigiDictProcessor {
                 outEntry.id = idCount.toString()
                 idCount++
 
-                outEntry.kipInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipUnicodeToKipInput(srcEntry.kip)
+                outEntry.kipInput =
+                    tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipUnicodeToKipInput(srcEntry.kip)
                 outEntry.kipUnicode = srcEntry.kip
 
-                outEntry.pojInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(outEntry.kipInput)
-                outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+                outEntry.pojInput =
+                    tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(outEntry.kipInput)
+                outEntry.pojUnicode =
+                    tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
 
                 outEntry.hanloTaibunKip = srcEntry.hanloTaibunKip
-                outEntry.hanloTaibunPoj = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridKipUnicodeToPojUnicode(srcEntry.hanloTaibunKip)
+                outEntry.hanloTaibunPoj =
+                    tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.hybridKipUnicodeToPojUnicode(srcEntry.hanloTaibunKip)
                 outEntry.hoabun = srcEntry.hoabun
                 outEntry.from = srcEntry.from
 
@@ -100,21 +104,23 @@ object ITaigiDictProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_input",
+            "poj_unicode",
+            "poj_input",
 
-                "kiplmj_unicode",
-                "kiplmj_input",
+            "kiplmj_unicode",
+            "kiplmj_input",
 
-                "hanlo_taibun_poj",
-                "hanlo_taibun_kip",
-                "hoabun",
+            "hanlo_taibun_poj",
+            "hanlo_taibun_kip",
+            "hoabun",
 
-                "from")
+            "from"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }

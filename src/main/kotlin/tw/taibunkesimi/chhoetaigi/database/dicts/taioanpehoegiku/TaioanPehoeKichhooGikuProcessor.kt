@@ -4,8 +4,13 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.chhoetaigi.database.ChhoeTaigiDatabaseOutputSettings
 import tw.taibunkesimi.chhoetaigi.database.dicts.taioanpehoegiku.entry.TaioanPehoeKichhooGikuOutEntry
 import tw.taibunkesimi.chhoetaigi.database.dicts.taioanpehoegiku.entry.TaioanPehoeKichhooGikuSrcEntry
+import tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann
+import tw.taibunkesimi.lib.lomajichoanoann.pojfix.PojInputFix
+import tw.taibunkesimi.lib.lomajichoanoann.pojfix.PojInputFixType
 import tw.taibunkesimi.util.io.CsvIO
 import tw.taibunkesimi.util.io.XlsxIO
+import java.util.*
+import kotlin.collections.ArrayList
 
 object TaioanPehoeKichhooGikuProcessor {
     private const val SRC_FILENAME = "TaioanPehoeKichhooGiku20201008.xlsx"
@@ -64,38 +69,52 @@ object TaioanPehoeKichhooGikuProcessor {
             outEntry.id = idCount.toString()
             idCount++
 
-            outEntry.kipInput = srcEntry.kip
-            outEntry.kipUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kip)
+            val pojInput = TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kip)
+            val fixedPojInput = PojInputFix.fixKuikuOnlyPojWithDelimiter(
+                pojInput.trim(),
+                EnumSet.of(PojInputFixType.ONN_SIA_CHO_OONN)
+            )
 
-            outEntry.kipInputOther = srcEntry.kipOther
-            outEntry.kipUnicodeOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kipOther)
+            val pojInputOther = TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kipOther)
+            val fixedPojInputOther = PojInputFix.fixKuikuOnlyPojWithDelimiter(
+                pojInputOther.trim(),
+                EnumSet.of(PojInputFixType.ONN_SIA_CHO_OONN)
+            )
 
-            outEntry.pojInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kip)
-            outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+            outEntry.pojInput = fixedPojInput
+            outEntry.pojUnicode = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
 
-            outEntry.pojInputOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kipOther)
-            outEntry.pojUnicodeOther = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInputOther)
+            outEntry.pojInputOther = fixedPojInputOther
+            outEntry.pojUnicodeOther = TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInputOther)
 
-            outEntry.hoabun = srcEntry.hoabun
+            outEntry.kipInput = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(outEntry.pojInput)
+            outEntry.kipUnicode = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kip)
 
-            outEntry.english = srcEntry.english
-            outEntry.englishSoatbeng = srcEntry.englishSoatbeng
+            outEntry.kipInputOther = TaigiLomajiKuikuChoanoann.onlyPojInputToKipInput(outEntry.pojInputOther)
+            outEntry.kipUnicodeOther = TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kipOther)
 
-            outEntry.nounClassifiers = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.nounClassifiers)
-            outEntry.opposite = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.opposite)
-            outEntry.exampleSu = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.exampleSu)
-            outEntry.fromSu = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.fromSu)
+            outEntry.hoabun = srcEntry.hoabun.trim()
 
-            outEntry.pageNumber = srcEntry.pageNumber
+            outEntry.english = srcEntry.english.trim()
+            outEntry.englishSoatbeng = srcEntry.englishSoatbeng.trim()
+
+            outEntry.nounClassifiers =
+                TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.nounClassifiers.trim())
+            outEntry.opposite = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.opposite.trim())
+            outEntry.exampleSu = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.exampleSu.trim())
+            outEntry.fromSu = TaigiLomajiKuikuChoanoann.onlyKipInputToPojUnicode(srcEntry.fromSu.trim())
+
+            outEntry.pageNumber = srcEntry.pageNumber.trim()
 //            println("srcEntry.pageNumber:${srcEntry.pageNumber}")
 
             if (srcEntry.pageNumber.toInt() in 441..660) {
-                outEntry.exampleKuTaibunPoj = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipUnicodeToPojUnicode(srcEntry.exampleKuTaibun)
+                outEntry.exampleKuTaibunPoj =
+                    TaigiLomajiKuikuChoanoann.onlyKipUnicodeToPojUnicode(srcEntry.exampleKuTaibun.trim())
             } else {
-                outEntry.exampleKuTaibunPoj = srcEntry.exampleKuTaibun
+                outEntry.exampleKuTaibunPoj = srcEntry.exampleKuTaibun.trim()
             }
-            outEntry.exampleKuHoabun = srcEntry.exampleKuHoabun
-            outEntry.exampleKuEnglish = srcEntry.exampleKuEnglish
+            outEntry.exampleKuHoabun = srcEntry.exampleKuHoabun.trim()
+            outEntry.exampleKuEnglish = srcEntry.exampleKuEnglish.trim()
 
             processedDictArray.add(outEntry)
         }
@@ -141,36 +160,38 @@ object TaioanPehoeKichhooGikuProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_unicode_other",
-                "poj_input",
-                "poj_input_other",
+            "poj_unicode",
+            "poj_unicode_other",
+            "poj_input",
+            "poj_input_other",
 
-                "kip_unicode",
-                "kip_unicode_other",
-                "kip_input",
-                "kip_input_other",
+            "kip_unicode",
+            "kip_unicode_other",
+            "kip_input",
+            "kip_input_other",
 
-                "hoabun",
+            "hoabun",
 
-                "english",
-                "english_soatbeng",
+            "english",
+            "english_soatbeng",
 
-                "noun_classifiers",
-                "example_su",
-                "opposite",
+            "noun_classifiers",
+            "example_su",
+            "opposite",
 
-                "example_ku_taibun_poj",
-                "example_ku_english",
-                "example_ku_hoabun",
+            "example_ku_taibun_poj",
+            "example_ku_english",
+            "example_ku_hoabun",
 
-                "from_su",
+            "from_su",
 
-                "page_number")
+            "page_number"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }

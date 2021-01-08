@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat
 import tw.taibunkesimi.chhoetaigi.database.ChhoeTaigiDatabaseOutputSettings
 import tw.taibunkesimi.chhoetaigi.database.dicts.taioansitbutmialui.entry.TaioanSitbutMialuiOutEntry
 import tw.taibunkesimi.chhoetaigi.database.dicts.taioansitbutmialui.entry.TaioanSitbutMialuiSrcEntry
+import tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann
 import tw.taibunkesimi.util.io.CsvIO
 import tw.taibunkesimi.util.io.XlsxIO
 
@@ -54,19 +55,21 @@ object TaioanSitbutMialuiProcessor {
                 continue
             }
 
-            outEntry.id = srcEntry.id
+            outEntry.id = srcEntry.id.trim()
 
-            outEntry.pojInput = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kip)
-            outEntry.pojUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
+            outEntry.pojInput =
+                TaigiLomajiKuikuChoanoann.onlyKipInputToPojInput(srcEntry.kip.trim())
+            outEntry.pojUnicode =
+                TaigiLomajiKuikuChoanoann.onlyPojInputToPojUnicode(outEntry.pojInput)
 
-            outEntry.kipInput = srcEntry.kip
-            outEntry.kipUnicode = tw.taibunkesimi.lib.lomajichoanoann.TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kip)
+            outEntry.kipInput = srcEntry.kip.trim()
+            outEntry.kipUnicode =
+                TaigiLomajiKuikuChoanoann.onlyKipInputToKipUnicode(srcEntry.kip.trim())
 
             outEntry.hanjiTaibun = srcEntry.hanjiTaibun.replace("€", "？")
             outEntry.pageNumber = srcEntry.pageNumber
 
             processedDictArray.add(outEntry)
-
         }
 
         // sort
@@ -93,19 +96,21 @@ object TaioanSitbutMialuiProcessor {
             dict.add(entryArray)
         }
 
-        val path = ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
+        val path =
+            ChhoeTaigiDatabaseOutputSettings.SAVE_FOLDER_DATABASE + ChhoeTaigiDatabaseOutputSettings.timestamp + SAVE_FILENAME_PATH
         val csvFormat: CSVFormat = CSVFormat.DEFAULT.withHeader(
-                "id",
+            "id",
 
-                "poj_unicode",
-                "poj_input",
+            "poj_unicode",
+            "poj_input",
 
-                "kip_unicode",
-                "kip_input",
+            "kip_unicode",
+            "kip_input",
 
-                "hanji_taibun",
+            "hanji_taibun",
 
-                "page_number")
+            "page_number"
+        )
 
         CsvIO.write(path, dict, csvFormat)
     }
