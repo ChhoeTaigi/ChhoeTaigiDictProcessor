@@ -9,7 +9,7 @@ import tw.taibunkesimi.util.io.CsvIO
 import tw.taibunkesimi.util.io.XlsxIO
 
 object TaiJitDictProcessor {
-    private const val SRC_FILENAME = "TaijitToaSutian20190417_fix20201008.xlsx"
+    private const val SRC_FILENAME = "TaijitToaSutian20190417_fix20210110.xlsx"
     private const val SAVE_FILENAME_PATH = "/ChhoeTaigi_TaijitToaSutian.csv"
 
     fun run(): Int {
@@ -32,7 +32,7 @@ object TaiJitDictProcessor {
             dictEntry.id = recordColumnArrayList[0]
             dictEntry.poj = recordColumnArrayList[1]
             dictEntry.pojOther = recordColumnArrayList[2]
-            dictEntry.hanloTaibunPoj = recordColumnArrayList[3]
+            dictEntry.hanloTaibunPoj = recordColumnArrayList[3].replace(" ", "")
             dictEntry.hanloTaibunKaisoehPoj = recordColumnArrayList[4]
             dictEntry.hanloTaibunLekuPoj = recordColumnArrayList[5]
             dictEntry.pageNumber = recordColumnArrayList[11]

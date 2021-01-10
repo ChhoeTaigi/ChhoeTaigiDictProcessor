@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 
 object PhahTaigiDatabaseSettings {
-    const val SRC_FOLDER_DATABASE = "./output_database/20210103_173026/"
+    const val SRC_FOLDER_DATABASE = "./output_database/20210111_042936/"
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
     val timestamp = dateFormatter.format(LocalDateTime.now())
@@ -61,6 +61,8 @@ private fun generateDict() {
     generateKip()
     println("generateTaijitToaSutian()")
     generateTaijitToaSutian()
+    println("generateTjPehoeSioSutian()")
+    generateTjPehoeSioSutian()
 
     println("generatePriorities()")
     generatePriorities()
@@ -83,6 +85,7 @@ private fun generateCustom() {
 private fun generateKip() {
     val dict: ArrayList<ArrayList<String>> =
         CsvIO.read(PhahTaigiDatabaseSettings.SRC_FOLDER_DATABASE + "ChhoeTaigi_KauiokpooTaigiSutian" + ".csv", true)
+
     for (sutiauRowArray in dict) {
         val wordId = sutiauRowArray[0].trim()
 
@@ -132,10 +135,10 @@ private fun generateKip() {
 private fun generateTaijitToaSutian() {
     val dict: ArrayList<ArrayList<String>> =
         CsvIO.read(PhahTaigiDatabaseSettings.SRC_FOLDER_DATABASE + "ChhoeTaigi_TaijitToaSutian" + ".csv", true)
+
     for (sutiauRowArray in dict) {
         val poj = sutiauRowArray[1].trim()
         val pojOther = sutiauRowArray[2].trim()
-        val hanji = sutiauRowArray[5].trim()
 
         var pojSplits = poj.split("[/,]".toRegex()).toMutableList()
         var pojOtherSplits = pojOther.split("[/,]".toRegex()).toMutableList()
@@ -147,12 +150,65 @@ private fun generateTaijitToaSutian() {
         val pojAll = ArrayList<String>()
         pojAll.addAll(pojSplits)
         pojAll.addAll(pojOtherSplits)
+        val filteredPojAll = pojAll.filter { it != "" }
 
-        for (pojBokangKonghoat in pojAll) {
+        for (pojBokangKonghoat in filteredPojAll) {
+            // skip thoân-thóng bô ê siá-hoat
+            if (pojBokangKonghoat.contains("(ur|or|ṳ|ṳ́|ṳ̀|ṳ̂|ṳ̃|ṳ̄|ṳ̍|ṳ̆|Ṳ|Ṳ́|Ṳ̀|Ṳ̂|Ṳ̃|Ṳ̄|Ṳ̍|Ṳ̆|o̤|ó̤|ò̤|ô̤|õ̤|ō̤|o̤̍|ŏ̤|O̤|Ó̤|Ò̤|Ô̤|Õ̤|Ō̤|O̤̍|Ŏ̤)".toRegex())) {
+                continue
+            }
+
             val imeDictItem = ImeDictItem()
             imeDictItem.poj = pojBokangKonghoat
             imeDictItem.hanji = ""
             imeDictItem.srcDict = 2
+
+            addToImeDict(imeDictItem)
+        }
+    }
+}
+
+private fun generateTjPehoeSioSutian() {
+    val dict: ArrayList<ArrayList<String>> =
+        CsvIO.read(
+            PhahTaigiDatabaseSettings.SRC_FOLDER_DATABASE + "ChhoeTaigiBookIndex_TJTaigiPehoeSioSutian" + ".csv",
+            true
+        )
+
+    for (sutiauRowArray in dict) {
+        var poj = sutiauRowArray[1].trim()
+        val pojOther = sutiauRowArray[2].trim()
+
+        // start with "--" fix
+        if (poj.startsWith("--")) {
+            poj = poj.substring(2)
+        } else if (poj.startsWith("-")) {
+            poj = poj.substring(1)
+        }
+
+        val pojSplits = poj.split("[/,]".toRegex()).toMutableList()
+        val pojOtherSplits = pojOther.split("[/,]".toRegex()).toMutableList()
+
+        val pojAll = ArrayList<String>()
+        pojAll.addAll(pojSplits)
+        pojAll.addAll(pojOtherSplits)
+        val filteredPojAll = pojAll.filter { it != "" }
+
+        for (pojBokangKonghoat in filteredPojAll) {
+            // skip thoân-thóng bô ê siá-hoat
+            if (pojBokangKonghoat.contains("(ur|or|ṳ|ṳ́|ṳ̀|ṳ̂|ṳ̃|ṳ̄|ṳ̍|ṳ̆|Ṳ|Ṳ́|Ṳ̀|Ṳ̂|Ṳ̃|Ṳ̄|Ṳ̍|Ṳ̆|o̤|ó̤|ò̤|ô̤|õ̤|ō̤|o̤̍|ŏ̤|O̤|Ó̤|Ò̤|Ô̤|Õ̤|Ō̤|O̤̍|Ŏ̤)".toRegex())) {
+                continue
+            }
+
+            // skip kî-thaⁿ chōng-hóng
+            if (pojBokangKonghoat.contains("(\\.|q|w|y|r|d|f|z|x|v)".toRegex())) {
+                continue
+            }
+
+            val imeDictItem = ImeDictItem()
+            imeDictItem.poj = pojBokangKonghoat
+            imeDictItem.hanji = ""
+            imeDictItem.srcDict = 3
 
             addToImeDict(imeDictItem)
         }
@@ -181,10 +237,9 @@ private fun removeBracketInfo(stringList: MutableList<String>): MutableList<Stri
 private fun addToImeDict(imeDictItem: ImeDictItem) {
     // check duplicate
     for (imeDictItemExist in imeDict) {
-        if (imeDictItem.srcDict == 1 && imeDictItemExist.hanji == imeDictItem.hanji && imeDictItemExist.poj.equals(
-                imeDictItem.poj,
-                ignoreCase = true
-            )
+        if (imeDictItem.srcDict == 1
+            && imeDictItemExist.hanji == imeDictItem.hanji
+            && imeDictItemExist.poj.equals(imeDictItem.poj, ignoreCase = true)
         ) {
             return
         }
@@ -198,11 +253,22 @@ private fun addToImeDict(imeDictItem: ImeDictItem) {
         }
     }
 
+    if (imeDictItem.poj.isEmpty()) {
+        return
+    }
+
     preprocessImeDictItem(imeDictItem)
 
     // skip chāi-lâi Tâi-oân Pe̍h-ōe-jī bô--ê
     if (imeDictItem.pojSujip.contains("(ur|or)".toRegex())) {
         return
+    }
+    val imchatList = imeDictItem.pojSujip.split("-").filter { it != "" }
+    for (imchat in imchatList) {
+        if (imchat.matches(".*(p2|t2|k2|h2)$".toRegex())) {
+//            println(imeDictItem.pojSujip)
+            return
+        }
     }
 
 //    println("${imeDictItem.poj}:${imeDictItem.hanji}")
@@ -296,11 +362,11 @@ private fun processToimchatKooHanji(imeDictItem: ImeDictItem) {
         val kooHanji = hanjiSplits[i]
         val pojImchat = pojImchatSplits[i].toLowerCase()
 
-        val imeDictItem = ImeDictItem()
-        imeDictItem.poj = pojImchat
-        imeDictItem.hanji = kooHanji
+        val thisImeDictItem = ImeDictItem()
+        thisImeDictItem.poj = pojImchat
+        thisImeDictItem.hanji = kooHanji
 
-        addToImeDict(imeDictItem)
+        addToImeDict(thisImeDictItem)
     }
 }
 
